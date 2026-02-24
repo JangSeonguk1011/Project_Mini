@@ -1,84 +1,89 @@
-"""
-파일명: preprocess_all_csv.py
-역할: 
-    1. 'data/' 폴더 내의 모든 'raw_*.csv' 파일을 자동으로 검색하여 일괄 처리.
-    2. 파일별 인코딩 자동 감지 및 'мўӢ' 등 인코딩 오류로 인한 외계어 제거.
-    3. 한글 비중 분석을 통해 정제 후에도 내용이 불충분한 불량 데이터를 자동으로 필터링.
-    4. 처리된 결과를 저장하여 데이터 유실 및 권한 에러 방지.
-"""
-
 import pandas as pd
 import chardet
 import re
 import os
 
 def detect_encoding(file_path):
+    """파일의 일부를 읽어 인코딩을 최대한 정확하게 감지"""
     with open(file_path, 'rb') as f:
-        rawdata = f.read(20000)
-    return chardet.detect(rawdata)['encoding']
+        rawdata = f.read(50000)  # 감지 정확도를 위해 읽기 범위 확대
+    result = chardet.detect(rawdata)
+    encoding = result['encoding']
+    confidence = result['confidence']
+    return encoding, confidence
 
-def preprocess_csv(file_path):
-    encoding = detect_encoding(file_path)
-    print(f"🔍 감지된 인코딩: {encoding}")
+def fix_broken_korean(text):
+    """
+    이미 깨진 상태로 로드된 문자열을 복구 시도 (ftfy 라이브러리 역할을 일부 수행)
+    인코딩 꼬임(Mojibake) 현상을 해결하기 위한 로직
+    """
+    if pd.isna(text) or not isinstance(text, str): return text
     
     try:
-        df = pd.read_csv(file_path, encoding=encoding, on_bad_lines='skip', encoding_errors='replace')
+        # UTF-8 데이터를 ISO-8859-1로 잘못 읽었을 경우 다시 되돌림
+        return text.encode('latin-1').decode('utf-8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        try:
+            # CP949 데이터를 latin-1로 잘못 읽었을 경우
+            return text.encode('latin-1').decode('cp949')
+        except:
+            return text
+
+def preprocess_csv(file_path):
+    encoding, confidence = detect_encoding(file_path)
+    print(f"🔍 감지된 인코딩: {encoding} (신뢰도: {confidence:.2f})")
+    
+    # 1. 일차적으로 감지된 인코딩으로 로드 시도
+    try:
+        # 인코딩 에러 발생 시 삭제하지 않고 'replace'하여 최대한 읽어옴
+        df = pd.read_csv(file_path, encoding=encoding, on_bad_lines='skip')
     except:
+        # 실패 시 한국어 윈도우 표준인 cp949 시도
         df = pd.read_csv(file_path, encoding='cp949', encoding_errors='replace')
 
     raw_count = len(df)
     
-    def clean_text(text):
-        if pd.isna(text): return ""
-        text = str(text)
-        
-        # 1. [강력 정제] 한글, 영문, 숫자, 마침표, 공백 외 'мўӢ' 같은 모든 유니코드 기호 제거
-        # 만약 특정 기호가 계속 남는다면 여기에 추가: [^가-힣a-zA-Z0-9\s\.문자]
-        clean = re.sub(r'[^가-힣a-zA-Z0-9\s\.]', '', text)
-        
-        # 2. 연속된 공백 통합
-        clean = re.sub(r'\s+', ' ', clean).strip()
-        return clean
-
+    # 2. 문자열 컬럼 복구 로직 적용
     str_cols = df.select_dtypes(include=['object', 'string']).columns
     for col in str_cols:
-        df[col] = df[col].apply(clean_text)
+        # 제거(re.sub) 대신 복구(fix_broken_korean) 적용
+        df[col] = df[col].apply(fix_broken_korean)
+        
+        # 복구 후에도 남은 불필요한 특수 제어 문자만 최소한으로 정리
+        df[col] = df[col].apply(lambda x: re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', str(x)) if pd.notna(x) else x)
 
-    # 3. [필터링 강화] 제목에 한글이 최소 3글자 이상 포함된 경우만 생존
-    # 기호가 섞여서 한글이 한두 글자만 남은 쓰레기 데이터를 걸러냅니다.
-    df = df[df['title'].str.count('[가-힣]') >= 3]
-    
-    # 4. [필터링 강화] 전체 길이 대비 한글 비중이 너무 낮으면 삭제
-    # (예: "삼성전자 мўӢmmҡ" 처럼 깨진 문자가 반 이상인 경우 방지)
+    # 3. [검증] 복구 후 한글 비중 분석 (삭제 기준 완화)
     def korean_ratio(text):
-        if not text: return 0
-        ko_count = len(re.findall(r'[가-힣]', text))
-        return ko_count / len(text) if len(text) > 0 else 0
+        if not text or pd.isna(text): return 0
+        ko_count = len(re.findall(r'[가-힣]', str(text)))
+        return ko_count / len(str(text)) if len(str(text)) > 0 else 0
 
-    df = df[df['title'].apply(korean_ratio) > 0.5] # 한글 비중 50% 이상만
+    # 복구가 불가능한 완전한 쓰레기 데이터만 최소한으로 필터링 (비중 50% -> 10%로 완화)
+    # 복구 로직을 거쳤으므로 웬만한 데이터는 살아남습니다.
+    df = df[df['title'].apply(korean_ratio) > 0.1] 
     
     clean_count = len(df)
 
     print("-" * 40)
-    print(f"📊 전처리 리포트 (필터링 강화)")
+    print(f"📊 복구 및 전처리 리포트")
     print(f"  - 원본 데이터: {raw_count:,}건")
-    print(f"  - 최종 유효 데이터: {clean_count:,}건")
-    print(f"  - 삭제된 불량 데이터: {raw_count - clean_count:,}건")
+    print(f"  - 복구 및 유지 데이터: {clean_count:,}건")
+    print(f"  - 삭제된 불복구 데이터: {raw_count - clean_count:,}건")
     print("-" * 40)
 
     return df
 
 if __name__ == "__main__":
-    # 입력과 출력 경로를 다르게 설정하여 PermissionError 및 데이터 유실 방지
-    input_path = "data/raw_incheon_incheon.csv"
-    output_path = "data/raw_incheon_incheon.csv" # 파일명 변경
+    # 처리할 파일 경로
+    input_path = "data/scraped/raw_incheon_incheon.csv"
+    output_path = "data/scraped/raw_incheon_incheon.csv" 
     
     if os.path.exists(input_path):
         result_df = preprocess_csv(input_path)
         
-        # 엑셀 종료 확인 후 실행 필수
         try:
+            # 저장 시에는 가장 범용적인 utf-8-sig (엑셀 호환) 사용
             result_df.to_csv(output_path, index=False, encoding='utf-8-sig')
-            print(f"✅ 결과가 '{output_path}'에 저장되었습니다.")
+            print(f"✅ 복구 완료된 결과가 '{output_path}'에 저장되었습니다.")
         except PermissionError:
-            print(f"❌ 에러: '{output_path}' 파일이 엑셀 등에서 열려 있습니다. 종료 후 다시 시도하세요.")
+            print(f"❌ 에러: 파일이 열려 있습니다. 종료 후 다시 시도하세요.")
