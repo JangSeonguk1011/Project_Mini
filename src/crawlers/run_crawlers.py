@@ -11,7 +11,7 @@ from crawler_manager import CrawlerManager
 def main():
     """크롤러 실행"""
     parser = argparse.ArgumentParser(
-        description='서울, 경기도, 강원도 지역 뉴스 크롤러',
+        description='서울, 경기도, 강원도, 충청도, 경상도, 전라도 지역 뉴스 크롤러',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 사용 예시:
@@ -35,9 +35,9 @@ def main():
     parser.add_argument(
         '--region',
         type=str,
-        choices=['서울', '경기도', '강원도'],
+        choices=['서울', '경기도', '강원도', '충청도', '경상도', '전라도'],
         default='서울',
-        help='지역 선택 (서울, 경기도, 강원도)'
+        help='지역 선택 (서울, 경기도, 강원도, 충청도, 경상도, 전라도)'
     )
     parser.add_argument(
         '--articles',

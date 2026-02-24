@@ -14,12 +14,17 @@ logger = logging.getLogger('DatabaseManager')
 class DatabaseManager:
     """SQLite 데이터베이스 관리"""
     
-    def __init__(self, db_path: str = '../../data/news.db'):
+    def __init__(self, db_path: str = 'data/news.db'):
         """
         Args:
             db_path: 데이터베이스 파일 경로
         """
-        self.db_path = db_path
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        if os.path.isabs(db_path):
+            self.db_path = db_path
+        else:
+            self.db_path = os.path.join(base_dir, db_path)
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         self._create_tables()
     
     def _create_tables(self):

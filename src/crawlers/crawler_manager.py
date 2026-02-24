@@ -11,6 +11,9 @@ import logging
 from regional.seoul.seoul_shinmun import SeoulShinmunCrawler
 from regional.gyeonggi.gyeonggi_ilbo import GyeonggiIlboCrawler
 from regional.gangwon.gangwon_domin_ilbo import GangwonDominIlboCrawler
+from regional.chungcheong.daejon_ilbo import ChungcheongCrawler
+from regional.gyeongsang.busan_ilbo import GyeongsangCrawler
+from regional.jeolla.jeonnam_ilbo import JeollaCrawler
 
 # 데이터베이스 및 텍스트 파일 저장
 from database_manager import DatabaseManager
@@ -53,6 +56,9 @@ class CrawlerManager:
             SeoulShinmunCrawler(),
             GyeonggiIlboCrawler(),
             GangwonDominIlboCrawler(),
+            ChungcheongCrawler(),
+            GyeongsangCrawler(),
+            JeollaCrawler(),
         ]
 
         for crawler in crawlers_list:

@@ -1,29 +1,109 @@
-from src.crawlers.base_crawler import BaseCrawler
+"""
+충청뉴스 크롤러
+충청도 지역 경제 뉴스 수집
+"""
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from base_crawler import BaseCrawler
+from typing import List, Dict, Optional
+from datetime import datetime
+import re
+
 
 class ChungcheongCrawler(BaseCrawler):
+    """충청뉴스 경제섹션 크롤러"""
+
     def __init__(self):
-        super().__init__("충청도", "충청뉴스")
-        self.url = "http://www.ccnnews.co.kr/news/articleList.html?sc_section_code=S1N3&view_type=sm"
+        config = {
+            'use_selenium': False,
+        }
 
-    def run(self):
-        soup = self.get_soup(self.url)
-        # 이미지 bb62f5 기준 리스트 블록
-        articles = soup.select("div.list-block")
-        print(f"    [충청도] 검색된 전체 기사: {len(articles)}개")
+        super().__init__(
+            newspaper_name='충청뉴스',
+            region='충청도',
+            base_url='http://www.ccnnews.co.kr',
+            config=config
+        )
 
-        for art in articles:
-            try:
-                title_tag = art.select_one(".list-titles a")
-                if not title_tag: continue
-                
-                title = title_tag.text.strip()
-                link = "http://www.ccnnews.co.kr" + title_tag['href']
+    def get_article_urls(self) -> List[str]:
+        url = f'{self.base_url}/news/articleList.html?sc_section_code=S1N3&view_type=sm'
+        soup = self.fetch_page(url)
+        if not soup:
+            return []
 
-                detail_soup = self.get_soup(link)
-                content_tag = detail_soup.select_one("#article-view-content-div")
-                content = content_tag.get_text(separator="\n").strip() if content_tag else "본문 없음"
+        urls = []
+        for item in soup.select('div.list-block .list-titles a'):
+            href = item.get('href')
+            if not href:
+                continue
+            full_url = href if href.startswith('http') else self.base_url + href
+            if full_url not in urls:
+                urls.append(full_url)
 
-                full_content = f"{content}\n\n기사 원본 링크: {link}"
-                self.save_to_file(title, full_content)
-            except Exception as e:
-                print(f"    [충청도] 오류 발생: {e}")
+        return urls
+
+    def parse_article(self, url: str) -> Optional[Dict]:
+        soup = self.fetch_page(url)
+        if not soup:
+            return None
+
+        try:
+            # 제목 추출: 여러 선택자 시도
+            title_elem = soup.select_one('h1') or soup.select_one('div.title-box h1') or soup.select_one('h2.title')
+            title = title_elem.get_text(strip=True) if title_elem else ''
+
+            # 제목이 없으면 첫 번째 큰 텍스트를 제목으로
+            if not title:
+                first_divs = soup.select('div[style*="font-size"]')
+                if first_divs:
+                    title = first_divs[0].get_text(strip=True)[:100]
+
+            # 본문 추출: 여러 선택자 시도
+            content_div = soup.select_one('#article-view-content-div') or \
+                         soup.select_one('div.article-content') or \
+                         soup.select_one('div#content-body') or \
+                         soup.select_one('div.print-content')
+            
+            content = ''
+            if content_div:
+                # 불필요한 요소 제거
+                for unwanted in content_div.select('script, style, .ad, .advertisement'):
+                    unwanted.decompose()
+                content = content_div.get_text(separator=' ', strip=True)
+            
+            # 본문이 없으면 모든 p 태그 수집
+            if not content:
+                paragraphs = soup.select('p')
+                content_parts = [p.get_text(strip=True) for p in paragraphs if len(p.get_text(strip=True)) > 20]
+                content = ' '.join(content_parts)
+
+            page_text = soup.get_text(strip=True)
+            date_str = ''
+            date_match = re.search(r'(\d{4}-\d{2}-\d{2})', page_text)
+            if date_match:
+                date_str = date_match.group(1)
+
+            writer = ''
+            writer_match = re.search(r'([가-힣]{2,4})\s*기자', page_text)
+            if writer_match:
+                writer = writer_match.group(1)
+
+            if not title or not content:
+                self.logger.warning(f"제목 또는 본문 없음: {url}")
+                return None
+
+            return {
+                'title': title,
+                'content': content,
+                'url': url,
+                'date': date_str,
+                'writer': writer,
+                'source': self.newspaper_name,
+                'collected_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"파싱 실패 ({url}): {e}")
+            return None
