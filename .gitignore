@@ -11,3 +11,6 @@ wheels/
 
 # log
 logs/
+
+# Gemini related
+.gemini/
