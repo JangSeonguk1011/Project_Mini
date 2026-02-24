@@ -118,17 +118,110 @@ class CrawlerManager:
         return pd.DataFrame(self.all_articles).sort_values('date', ascending=False).reset_index(drop=True)
 
     def save_to_csv(self, filename: str = '../data/regional_news.csv'):
-        """CSV 파일로 저장"""
+        """CSV 파일로 저장 (기존 데이터 유지하고 새로운 데이터 추가/업데이트)"""
         df = self.to_dataframe()
         if df.empty:
             logger.warning("저장할 데이터가 없습니다.")
             return
 
-        df.to_csv(filename, index=False, encoding='utf-8-sig')
-        logger.info(f"\n✓ CSV 파일 저장: {filename}")
-        logger.info(f"  - 전체 기사: {len(df)}개")
-        logger.info(f"  - 수집 지역: {sorted(df['region'].unique().tolist())}")
-        logger.info(f"  - 수집 신문: {sorted(df['source'].unique().tolist())}")
+        import os
+        import tempfile
+        import shutil
+        import gc
+        
+        # 절대 경로 계산 (크롤러는 src/crawlers/에 있음)
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        csv_path = os.path.join(project_root, 'data', 'regional_news.csv')
+        
+        # 기존 CSV 파일이 있으면 읽기
+        if os.path.exists(csv_path):
+            try:
+                existing_df = pd.read_csv(csv_path, low_memory=False)
+                logger.info(f"기존 CSV 파일 로드: {len(existing_df)}개 기사")
+                
+                # 새로운 데이터와 기존 데이터 합치기
+                combined_df = pd.concat([df, existing_df], ignore_index=True)
+                
+                # URL 기준으로 중복 제거 (최신 데이터 우선)
+                combined_df = combined_df.drop_duplicates(subset=['url'], keep='first')
+                
+                # 날짜 기준으로 정렬
+                combined_df = combined_df.sort_values('date', ascending=False).reset_index(drop=True)
+                
+                logger.info(f"기존 + 새로운 데이터 병합: {len(combined_df)}개 기사 (중복 제거)")
+                df = combined_df
+                
+                # 메모리 정리
+                del existing_df
+                gc.collect()
+                
+            except Exception as e:
+                logger.warning(f"기존 CSV 파일 읽기 실패: {e}. 새로운 파일로 저장합니다.")
+        
+        # CSV 저장
+        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+        
+        # 임시 파일 경로
+        temp_csv = csv_path + '.tmp'
+        
+        retry_count = 0
+        max_retries = 3
+        
+        while retry_count < max_retries:
+            try:
+                # 임시 파일에 먼저 저장
+                df.to_csv(temp_csv, index=False, encoding='utf-8-sig')
+                gc.collect()
+                
+                # 기존 파일 제거 시도
+                if os.path.exists(csv_path):
+                    try:
+                        os.remove(csv_path)
+                    except OSError as e:
+                        logger.debug(f"기존 파일 제거 실패 (재시도): {e}")
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            import time
+                            time.sleep(0.5)
+                            continue
+                        else:
+                            # 파일을 못 제거해도 원본을 다른 이름으로 저장하고 새 내용으로 덮어쓰기
+                            backup = csv_path + '.bak'
+                            if os.path.exists(backup):
+                                try:
+                                    os.remove(backup)
+                                except:
+                                    pass
+                            shutil.copy(csv_path, backup)
+                            logger.debug(f"기존 파일을 {backup}으로 백업")
+                
+                # 임시 파일을 최종 위치로 이동
+                if os.path.exists(temp_csv):
+                    shutil.move(temp_csv, csv_path)
+                    
+                logger.info(f"\n✓ CSV 파일 저장 완료: {csv_path}")
+                logger.info(f"  - 전체 기사: {len(df)}개")
+                logger.info(f"  - 수집 지역: {sorted(df['region'].unique().tolist())}")
+                logger.info(f"  - 수집 신문: {sorted(df['source'].unique().tolist())}")
+                break
+                
+            except Exception as e:
+                logger.debug(f"CSV 저장 시도 #{retry_count + 1} 실패: {e}")
+                retry_count += 1
+                if retry_count >= max_retries:
+                    # 마지막 시도 - 임시 파일 경로에 저장
+                    fallback_path = csv_path + '_latest.csv'
+                    try:
+                        df.to_csv(fallback_path, index=False, encoding='utf-8-sig')
+                        logger.error(f"CSV 파일을 {fallback_path}에 저장했습니다")
+                        logger.error(f"원본 파일 ({csv_path})이 다른 프로세스에서 사용 중입니다")
+                        raise PermissionError(f"파일이 잠금 상태입니다. 대신 {fallback_path}에 저장되었습니다.") from e
+                    except Exception as fallback_error:
+                        logger.error(f"모든 저장 시도 실패: {fallback_error}")
+                        raise
+                else:
+                    import time
+                    time.sleep(0.5)
 
     def save_to_database(self):
         """데이터베이스에 저장"""
@@ -155,6 +248,9 @@ class CrawlerManager:
                 self.db_manager.update_region_stats(region, newspaper, news_count)
 
         logger.info(f"✓ {inserted}개 기사 데이터베이스 저장 완료")
+        
+        # 30일 이전 기사 자동 삭제
+        self.db_manager.delete_old_articles(days=30)
 
         # 통계 출력
         self.db_manager.print_stats()

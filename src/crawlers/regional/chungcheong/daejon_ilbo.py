@@ -97,10 +97,15 @@ class ChungcheongCrawler(BaseCrawler):
                         content = ' '.join(p_texts[:3])
 
             # 날짜 추출
-            date_str = ''
-            date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})', page_text)
-            if date_match:
-                date_str = date_match.group(0)
+            # 날짜+시간 추출
+            published_time = ''
+            datetime_match = re.search(r'(\d{4})[-./](\d{2})[-./](\d{2})\s+(\d{1,2}):(\d{2})', page_text)
+            if datetime_match:
+                published_time = f"{datetime_match.group(1)}-{datetime_match.group(2)}-{datetime_match.group(3)} {datetime_match.group(4).zfill(2)}:{datetime_match.group(5)}"
+            else:
+                date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})', page_text)
+                if date_match:
+                    published_time = date_match.group(0)
 
             # 기자 추출
             writer = ''
@@ -112,11 +117,15 @@ class ChungcheongCrawler(BaseCrawler):
                 self.logger.warning(f"제목 또는 본문 없음: {url}")
                 return None
 
+            # published_time에는 날짜만 저장
+            pub_date = published_time.split()[0] if ' ' in published_time else published_time
+            
             return {
                 'title': title,
                 'content': content,
                 'url': url,
-                'date': date_str,
+                'date': pub_date,
+                'published_time': pub_date,
                 'writer': writer,
                 'source': self.newspaper_name,
                 'collected_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')

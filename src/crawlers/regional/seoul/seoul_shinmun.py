@@ -106,11 +106,17 @@ class SeoulShinmunCrawler(BaseCrawler):
             # 전체 페이지 텍스트에서 날짜와 작성자 추출
             page_text = soup.get_text()
             
-            # 날짜 추출 (YYYY-MM-DD 형식)
-            date_str = ''
-            date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})', page_text)
-            if date_match:
-                date_str = date_match.group(0)
+            # 날짜+시간 추출 (다양한 형식 지원)
+            published_time = ''
+            # YYYY-MM-DD HH:MM 또는 YYYY.MM.DD HH:MM 형식
+            datetime_match = re.search(r'(\d{4})[-./](\d{2})[-./](\d{2})\s+(\d{1,2}):(\d{2})', page_text)
+            if datetime_match:
+                published_time = f"{datetime_match.group(1)}-{datetime_match.group(2)}-{datetime_match.group(3)} {datetime_match.group(4).zfill(2)}:{datetime_match.group(5)}"
+            else:
+                # 날짜만 있는 경우
+                date_match = re.search(r'(\d{4})[-./](\d{2})[-./](\d{2})', page_text)
+                if date_match:
+                    published_time = f"{date_match.group(1)}-{date_match.group(2)}-{date_match.group(3)}"
             
             # 작성자 추출 ("XXX 기자" 패턴)
             writer = ''
@@ -118,11 +124,15 @@ class SeoulShinmunCrawler(BaseCrawler):
             if writer_match:
                 writer = writer_match.group(1)
             
+            # published_time에는 날짜만 저장
+            pub_date = published_time.split()[0] if ' ' in published_time else published_time
+            
             return {
                 'title': title,
                 'content': content,
                 'url': url,
-                'date': date_str,
+                'date': pub_date,
+                'published_time': pub_date,
                 'writer': writer,
                 'source': self.newspaper_name,
                 'collected_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')

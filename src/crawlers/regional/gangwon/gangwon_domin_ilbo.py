@@ -95,13 +95,19 @@ class GangwonDominIlboCrawler(BaseCrawler):
                         content_parts.append(text)
                 content = ' '.join(content_parts)
             
-            # 날짜 추출 (예: "입력 2026.02.23")
-            date_str = ''
+            # 날짜+시간 추출 (예: "입력 2026.02.23 15:30" 또는 "입력 2026.02.23")
+            published_time = ''
             date_pattern = soup.find(text=re.compile(r'입력\s*\d{4}\.\d{2}\.\d{2}'))
             if date_pattern:
-                date_match = re.search(r'\d{4}\.\d{2}\.\d{2}', date_pattern)
-                if date_match:
-                    date_str = date_match.group(0).replace('.', '-')
+                # 시간 포함 패턴 먼저 시도
+                datetime_match = re.search(r'(\d{4})\.(\d{2})\.(\d{2})\s+(\d{1,2}):(\d{2})', date_pattern)
+                if datetime_match:
+                    published_time = f"{datetime_match.group(1)}-{datetime_match.group(2)}-{datetime_match.group(3)} {datetime_match.group(4).zfill(2)}:{datetime_match.group(5)}"
+                else:
+                    # 날짜만 있는 경우
+                    date_match = re.search(r'(\d{4})\.(\d{2})\.(\d{2})', date_pattern)
+                    if date_match:
+                        published_time = f"{date_match.group(1)}-{date_match.group(2)}-{date_match.group(3)}"
             
             # 기자 이름 추출
             writer = ''
@@ -120,11 +126,15 @@ class GangwonDominIlboCrawler(BaseCrawler):
                 self.logger.warning(f"제목 또는 본문 없음: {url}")
                 return None
             
+            # published_time에는 날짜만 저장
+            pub_date = published_time.split()[0] if ' ' in published_time else published_time
+            
             return {
                 'title': title,
                 'content': content,
                 'url': url,
-                'date': date_str,
+                'date': pub_date,
+                'published_time': pub_date,
                 'writer': writer,
                 'source': self.newspaper_name,
                 'collected_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')

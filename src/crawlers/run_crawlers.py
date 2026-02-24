@@ -4,6 +4,13 @@
 """
 
 import sys
+import os
+
+# Windows에서 UTF-8 출력 설정
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 import argparse
 from crawler_manager import CrawlerManager
 

@@ -41,6 +41,14 @@ data/*.json
 *.db
 *.sqlite3
 !data/README.md
+data/articles/
+*.bak
+
+# Test & Temporary Scripts
+check_*.py
+test_*.py
+update_*.py
+verify_*.py
 
 # Logs
 logs/
