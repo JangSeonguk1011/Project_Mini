@@ -2,6 +2,7 @@ import os
 import re
 import logging
 from typing import Dict
+from datetime import datetime
 from database_manager import DatabaseManager
 
 logging.basicConfig(
@@ -55,7 +56,8 @@ class DataMigrator:
                 'sentiment_score': 0,  # 분석 전
                 'is_processed': 0,        # analyzer가 처리
                 'published_time': published_time,
-                'url': url
+                'url': url,
+               
             }
 
         except Exception as e:
