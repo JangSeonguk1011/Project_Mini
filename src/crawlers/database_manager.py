@@ -22,58 +22,56 @@ STOPWORDS = {
     '-', '·', '…', '"', '"', ''', ''', '(', ')', '[', ']', '<', '>', '/', '\\', '|'
 }
 
+# Kiwi 인스턴스 전역 초기화 (메모리 효율성 및 속도 향상)
+_kiwi = None
+try:
+    from kiwipiepy import Kiwi
+    _kiwi = Kiwi()
+except ImportError:
+    logger.warning("kiwipiepy가 설치되지 않았습니다. 기본 추출 방식을 사용합니다.")
+
 def extract_keyword(title: str, content: str = '') -> str:
     """
-    기사 제목과 본문에서 핵심 키워드 추출 (kiwipiepy 사용)
-    
-    Args:
-        title: 기사 제목
-        content: 기사 본문 (선택)
-        
-    Returns:
-        쉼표로 구분된 키워드 문자열
+    기사 제목과 본문에서 핵심 키워드 추출
     """
     if not title:
         return ''
     
-    from kiwipiepy import Kiwi
-    from collections import Counter
     import re
+    from collections import Counter
     
-    # Kiwi 인스턴스 (성능을 위해 캐시하거나 클래스 멤버로 관리할 수도 있음)
-    kiwi = Kiwi()
-    
-    # 제목과 본문 결합 (본문은 앞부분 500자만 사용)
+    # 제목과 본문 결합
     text = f"{title} {content[:500]}"
-    
     # 특수문자 제거
     text = re.sub(r'[^\w\s가-힣]', ' ', text)
     
-    # 토큰화 및 명사 추출 (NNG: 일반 명사, NNP: 고유 명사)
-    tokens = kiwi.tokenize(text)
-    
-    # 불용어 리스트 확장
+    # 불용어 리스트
     STOPWORDS_EXTENDED = {
         '기자', '뉴스', '배포', '무단', '금지', '전재', '오늘', '어제', '내일', '이번', '지난',
         '때문', '대한', '관련', '통해', '위해', '경우', '사진', '밝혔다', '말했다', '최근',
         '지역', '투데이', '확대', '이미지', '보기', '기사', '오전', '오후', '시간', '지난해',
         '서울', '경기', '인천', '충청', '대전', '세종', '부산', '경남', '울산', '대구', '경북', '광주', '전라', '전남', '전북', '강원', '제주'
     }
-    
-    # 명사 추출 및 불용어 제거
-    nouns = []
-    for t in tokens:
-        if t.tag in ('NNG', 'NNP') and len(t.form) > 1:
-            if t.form not in STOPWORDS_EXTENDED and t.form not in STOPWORDS:
-                nouns.append(t.form)
-    
-    # 빈도수 기반 상위 5개 추출
-    counts = Counter(nouns)
-    top_keywords = [word for word, count in counts.most_common(5)]
-    
-    result = ', '.join(top_keywords) if top_keywords else '키워드 없음'
-    logger.debug(f"키워드 추출(Kiwi): {title[:30]}... → {result}")
-    return result
+
+    try:
+        if _kiwi:
+            # Kiwi를 이용한 정밀 추출
+            tokens = _kiwi.tokenize(text)
+            nouns = [t.form for t in tokens if t.tag in ('NNG', 'NNP') and len(t.form) > 1 
+                     and t.form not in STOPWORDS_EXTENDED and t.form not in STOPWORDS]
+            counts = Counter(nouns)
+            top_keywords = [word for word, count in counts.most_common(5)]
+        else:
+            # Kiwi가 없을 경우 기본 공백 분할 방식 (Fallback)
+            words = text.split()
+            nouns = [w for w in words if len(w) >= 2 and w not in STOPWORDS_EXTENDED and w not in STOPWORDS]
+            top_keywords = list(dict.fromkeys(nouns))[:5]
+            
+        return ', '.join(top_keywords) if top_keywords else '키워드 없음'
+        
+    except Exception as e:
+        logger.error(f"키워드 추출 중 오류 발생: {e}")
+        return '키워드 추출 실패'
 
 class DatabaseManager:
     """SQLite 데이터베이스 관리"""
