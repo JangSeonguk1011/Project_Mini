@@ -14,17 +14,22 @@ logger = logging.getLogger('TextFileSaver')
 class TextFileSaver:
     """원본 뉴스를 텍스트 파일로 저장"""
     
-    def __init__(self, base_dir: str = '../../data/articles'):
+    def __init__(self, base_dir: str = 'data/articles'):
         """
         Args:
             base_dir: 텍스트 파일 저장 기본 경로
         """
-        self.base_dir = base_dir
+        # 프로젝트 루트 기준으로 경로 설정
+        if os.path.isabs(base_dir):
+            self.base_dir = base_dir
+        else:
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+            self.base_dir = os.path.join(project_root, base_dir)
         self._create_directories()
     
     def _create_directories(self):
         """지역별 디렉토리 생성"""
-        regions = ['서울', '경기도', '강원도']
+        regions = ['서울', '경기도', '강원도', '충청도', '경상도', '전라도']
         
         for region in regions:
             region_dir = os.path.join(self.base_dir, region)

@@ -55,36 +55,56 @@ class JeollaCrawler(BaseCrawler):
             return None
 
         try:
-            # 제목 추출: 여러 선택자 시도
-            title_elem = soup.select_one('h1') or \
-                        soup.select_one('h2.headline') or \
-                        soup.select_one('div.article-title')
+            # 제목 추출: h1 태그
+            title_elem = soup.select_one('h1')
             title = title_elem.get_text(strip=True) if title_elem else ''
 
-            # 본문 추출: 여러 선택자 시도
-            content_div = soup.select_one('#article-view-content-div') or \
-                         soup.select_one('div.article-content') or \
-                         soup.select_one('div.content-body') or \
-                         soup.select_one('article')
-            
+            # 제목이 없으면 첫 번째 큰 텍스트 찾기
+            if not title:
+                all_text = soup.get_text()
+                lines = [line.strip() for line in all_text.split('\n') if len(line.strip()) > 5]
+                if lines:
+                    title = lines[0][:100]
+
+            # 본문 추출: 모든 p 태그 수집
             content = ''
-            if content_div:
-                for elem in content_div.select('script, style, .ad'):
-                    elem.decompose()
-                content = content_div.get_text(separator=' ', strip=True)
+            p_tags = soup.select('p')
             
-            # 본문이 없으면 p 태그들 수집
-            if not content:
-                paragraphs = soup.select('p')
-                content_parts = [p.get_text(strip=True) for p in paragraphs if len(p.get_text(strip=True)) > 20]
-                content = ' '.join(content_parts)
+            if p_tags:
+                p_texts = []
+                for p in p_tags:
+                    text = p.get_text(strip=True)
+                    if len(text) > 50:  # 긴 텍스트만
+                        p_texts.append(text)
+                
+                if p_texts:
+                    content = ' '.join(p_texts[:3])
+            
+            # p 태그가 없으면 전체 텍스트에서 추출
+            if not content or len(content) < 30:
+                page_text = soup.get_text()
+                match_end_pos = page_text.find('저작권자')
+                if match_end_pos == -1:
+                    match_end_pos = page_text.find('Copyright ⓒ')
+                
+                if match_end_pos > 0:
+                    pattern_match = re.search(r'\[[^\]]*기자\]', page_text)
+                    if pattern_match:
+                        start_pos = pattern_match.end()
+                        content = page_text[start_pos:match_end_pos].strip()
+                        # 제한 없이 전체 본문 가져오기 (최대 50000자)
+                        content = ' '.join(content.split())
+                        if len(content) > 50000:
+                            content = content[:50000]
 
-            page_text = soup.get_text(strip=True)
+            # 날짜 추출
+            page_text = soup.get_text()
             date_str = ''
-            date_match = re.search(r'(\d{4}-\d{2}-\d{2})', page_text)
+            date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})', page_text)
             if date_match:
-                date_str = date_match.group(1)
+                date_str = date_match.group(0)
 
+            # 기자 추출
             writer = ''
             writer_match = re.search(r'([가-힣]{2,4})\s*기자', page_text)
             if writer_match:

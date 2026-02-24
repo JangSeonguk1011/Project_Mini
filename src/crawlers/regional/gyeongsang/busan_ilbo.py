@@ -51,48 +51,58 @@ class GyeongsangCrawler(BaseCrawler):
             return None
 
         try:
-            # 제목 추출: 여러 선택자 시도 (h1, h2, span 등)
-            title_elem = soup.select_one('h1') or \
-                        soup.select_one('.view_top h2') or \
-                        soup.select_one('span.title') or \
-                        soup.select_one('div.title-wrap h2')
+            # 제목 추출: h1 태그 
+            title_elem = soup.select_one('h1')
             title = title_elem.get_text(strip=True) if title_elem else ''
-            
-            # 제목이 없으면 첫 번째 큰 텍스트 찾기
+
+            # 제목이 없으면 첫 번째 의미있는 텍스트
             if not title:
                 all_text = soup.get_text()
-                # 개행으로 구분된 첫 줄에서 제목 추출
-                lines = [line.strip() for line in all_text.split('\n') if len(line.strip()) > 5]
+                lines = [line.strip() for line in all_text.split('\n') if len(line.strip()) > 10 and len(line.strip()) < 150]
                 if lines:
-                    title = lines[0][:100]
+                    title = lines[0]
 
-            # 본문 추출: 여러 선택자 시도
-            content_tag = soup.select_one('#view_con') or \
-                soup.select_one('.view_con') or \
-                soup.select_one('#contents .view_con') or \
-                soup.select_one('.article_content') or \
-                soup.select_one('div.view-content') or \
-                soup.select_one('article')
-
+            # 본문 추출: 전체 텍스트에서 추출 (가장 안정적인 방법)
+            page_text = soup.get_text()
             content = ''
-            if content_tag:
-                # 불필요한 요소 제거
-                for s in content_tag.select('script, style, button, ins, .ad, .advertisement'):
-                    s.decompose()
-                content = content_tag.get_text(separator=' ', strip=True)
             
-            # 본문이 없으면 모든 p/div 태그 수집
-            if not content:
-                paragraphs = soup.select('p, div.content')
-                content_parts = [p.get_text(strip=True) for p in paragraphs if len(p.get_text(strip=True)) > 20]
-                content = ' '.join(content_parts)
+            # 기자명 뒤 "]" 찾기
+            import re
+            match_end_pos = page_text.find('저작권자')
+            if match_end_pos == -1:
+                match_end_pos = page_text.find('Copyright ⓒ')
+            
+            if match_end_pos > 0:
+                # 기사 본문 구간 찾기: 첫 [지역_신문=기자] 패턴 이후부터
+                pattern_match = re.search(r'\[[^\]]*기자\]', page_text)
+                if pattern_match:
+                    start_pos = pattern_match.end()
+                    content = page_text[start_pos:match_end_pos].strip()
+                    # 공백 정리
+                    content = ' '.join(content.split())
+                    # 제한 없이 전체 본문 가져오기 (최대 50000자)
+                    if len(content) > 50000:
+                        content = content[:50000]
 
-            page_text = soup.get_text(strip=True)
+            # 본문이 여전히 없으면 모든 p 태그 시도
+            if not content or len(content) < 30:
+                p_tags = soup.select('p')
+                if p_tags:
+                    p_texts = []
+                    for p in p_tags:
+                        text = p.get_text(strip=True)
+                        if len(text) > 50:  # 긴 텍스트만
+                            p_texts.append(text)
+                    if p_texts:
+                        content = ' '.join(p_texts[:3])
+
+            # 날짜 추출
             date_str = ''
-            date_match = re.search(r'(\d{4}-\d{2}-\d{2})', page_text)
+            date_match = re.search(r'(\d{4})-(\d{2})-(\d{2})', page_text)
             if date_match:
-                date_str = date_match.group(1)
+                date_str = date_match.group(0)
 
+            # 기자 추출
             writer = ''
             writer_match = re.search(r'([가-힣]{2,4})\s*기자', page_text)
             if writer_match:

@@ -19,12 +19,13 @@ class DatabaseManager:
         Args:
             db_path: 데이터베이스 파일 경로
         """
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
         if os.path.isabs(db_path):
             self.db_path = db_path
         else:
-            self.db_path = os.path.join(base_dir, db_path)
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+            self.db_path = os.path.join(project_root, db_path)
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        logger.info(f"✓ 데이터베이스 경로: {self.db_path}")
         self._create_tables()
     
     def _create_tables(self):
