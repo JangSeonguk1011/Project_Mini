@@ -24,7 +24,7 @@ STOPWORDS = {
 
 def extract_keyword(title: str, content: str = '') -> str:
     """
-    기사 제목에서 핵심 키워드 추출
+    기사 제목과 본문에서 핵심 키워드 추출 (kiwipiepy 사용)
     
     Args:
         title: 기사 제목
@@ -36,33 +36,43 @@ def extract_keyword(title: str, content: str = '') -> str:
     if not title:
         return ''
     
-    # 특수문자 제거 및 단어 분리
+    from kiwipiepy import Kiwi
+    from collections import Counter
     import re
     
-    # 제목 정제
-    cleaned = re.sub(r'[^\w\s가-힣a-zA-Z0-9]', ' ', title)
-    words = cleaned.split()
+    # Kiwi 인스턴스 (성능을 위해 캐시하거나 클래스 멤버로 관리할 수도 있음)
+    kiwi = Kiwi()
     
-    # 키워드 추출 로직
-    keywords = []
-    for word in words:
-        word = word.strip()
-        # 너무 짧거나 불용어는 제외
-        if len(word) >= 2 and word not in STOPWORDS:
-            # 숫자만 있는 것도 제외
-            if not word.isdigit():
-                keywords.append(word)
+    # 제목과 본문 결합 (본문은 앞부분 500자만 사용)
+    text = f"{title} {content[:500]}"
     
-    # 중복 제거하고 최대 5개까지만
-    unique_keywords = []
-    for kw in keywords:
-        if kw not in unique_keywords:
-            unique_keywords.append(kw)
-        if len(unique_keywords) >= 5:
-            break
+    # 특수문자 제거
+    text = re.sub(r'[^\w\s가-힣]', ' ', text)
     
-    result = ', '.join(unique_keywords) if unique_keywords else '키워드 없음'
-    logger.debug(f"키워드 추출: {title[:30]}... → {result}")
+    # 토큰화 및 명사 추출 (NNG: 일반 명사, NNP: 고유 명사)
+    tokens = kiwi.tokenize(text)
+    
+    # 불용어 리스트 확장
+    STOPWORDS_EXTENDED = {
+        '기자', '뉴스', '배포', '무단', '금지', '전재', '오늘', '어제', '내일', '이번', '지난',
+        '때문', '대한', '관련', '통해', '위해', '경우', '사진', '밝혔다', '말했다', '최근',
+        '지역', '투데이', '확대', '이미지', '보기', '기사', '오전', '오후', '시간', '지난해',
+        '서울', '경기', '인천', '충청', '대전', '세종', '부산', '경남', '울산', '대구', '경북', '광주', '전라', '전남', '전북', '강원', '제주'
+    }
+    
+    # 명사 추출 및 불용어 제거
+    nouns = []
+    for t in tokens:
+        if t.tag in ('NNG', 'NNP') and len(t.form) > 1:
+            if t.form not in STOPWORDS_EXTENDED and t.form not in STOPWORDS:
+                nouns.append(t.form)
+    
+    # 빈도수 기반 상위 5개 추출
+    counts = Counter(nouns)
+    top_keywords = [word for word, count in counts.most_common(5)]
+    
+    result = ', '.join(top_keywords) if top_keywords else '키워드 없음'
+    logger.debug(f"키워드 추출(Kiwi): {title[:30]}... → {result}")
     return result
 
 class DatabaseManager:

@@ -10,6 +10,7 @@ numpy==1.26.0
 # 한국어 처리
 jpype1>=1.6.0
 konlpy>=0.6.0
+kiwipiepy>=0.17.0
 
 # 유틸리티
 python-dotenv==1.0.0
