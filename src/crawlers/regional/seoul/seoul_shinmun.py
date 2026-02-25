@@ -34,24 +34,34 @@ class SeoulShinmunCrawler(BaseCrawler):
         """
         서울신문 경제섹션 URL 추출
         """
-        # 서울신문 경제 섹션 URL
-        url = f'{self.base_url}/newsList/economy/'
-        soup = self.fetch_page(url)
-        
-        if not soup:
-            return []
-        
         urls = []
-        # 경제 뉴스 기사 링크 추출
-        articles = soup.select('a[href*="/news/economy/"]')
-        
-        for article in articles[:50]:  # 최대 50개
-            href = article.get('href')
-            if href and '/news/economy/' in href:
-                full_url = href if href.startswith('http') else self.base_url + href
-                if full_url not in urls:  # 중복 제거
-                    urls.append(full_url)
-        
+        seen = set()
+        for page in range(1, 21):
+            url = f'{self.base_url}/newsList/economy?page={page}'
+            soup = self.fetch_page(url)
+
+            if not soup:
+                self.logger.info(f"  페이지 {page}: 페이지 로드 실패 - 수집 완료")
+                break
+
+            # 경제 뉴스 기사 링크 추출
+            articles = soup.select('a[href*="/news/economy/"]')
+            if not articles:
+                self.logger.info(f"  페이지 {page}: 더 이상 기사 없음 - 수집 완료")
+                break
+
+            page_start_urls = len(urls)
+            for article in articles:
+                href = article.get('href')
+                if href and '/news/economy/' in href:
+                    full_url = href if href.startswith('http') else self.base_url + href
+                    if full_url not in seen:
+                        seen.add(full_url)
+                        urls.append(full_url)
+            
+            new_urls = len(urls) - page_start_urls
+            self.logger.info(f"  페이지 {page}: {new_urls}개 URL 수집 (누계: {len(urls)}개)")
+
         return urls
     
     def parse_article(self, url: str) -> Optional[Dict]:

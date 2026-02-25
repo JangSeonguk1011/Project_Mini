@@ -32,37 +32,42 @@ class GangwonDominIlboCrawler(BaseCrawler):
         강원도민일보 경제섹션 URL 추출
         실제 URL: https://www.kado.net/news/articleList.html?sc_section_code=S1N2
         """
-        # 경제 섹션 URL (sc_section_code=S1N2)
-        url = f'{self.base_url}/news/articleList.html?sc_section_code=S1N2'
-        soup = self.fetch_page(url)
-        
-        if not soup:
-            self.logger.warning("경제 섹션 페이지 가져오기 실패")
-            return []
-        
         urls = []
-        
-        # h2 태그 안의 링크 찾기 (기사 목록)
-        article_headings = soup.select('h2')
-        
-        for heading in article_headings[:50]:  # 최대 50개
-            link_elem = heading.select_one('a')
-            if link_elem and link_elem.get('href'):
-                href = link_elem['href']
-                
-                # 전체 URL 구성
-                if href.startswith('http'):
-                    full_url = href
-                elif href.startswith('/'):
-                    full_url = self.base_url + href
-                else:
-                    full_url = self.base_url + '/' + href
-                
-                # articleView가 포함된 URL만 (실제 기사)
-                if 'articleView' in full_url:
-                    urls.append(full_url)
-                    self.logger.info(f"기사 URL 수집: {full_url}")
-        
+        seen = set()
+        for page in range(1, 21):
+            url = f'{self.base_url}/news/articleList.html?sc_section_code=S1N2&page={page}'
+            soup = self.fetch_page(url)
+
+            if not soup:
+                self.logger.info(f"  페이지 {page}: 페이지 로드 실패 - 수집 완료")
+                break
+
+            # h2 태그 안의 링크 찾기 (기사 목록)
+            article_headings = soup.select('h2')
+            if not article_headings:
+                self.logger.info(f"  페이지 {page}: 더 이상 기사 없음 - 수집 완료")
+                break
+
+            page_start_urls = len(urls)
+            for heading in article_headings:
+                link_elem = heading.select_one('a')
+                if link_elem and link_elem.get('href'):
+                    href = link_elem['href']
+
+                    # 전체 URL 구성
+                    if href.startswith('http'):
+                        full_url = href
+                    elif href.startswith('/'):
+                        full_url = self.base_url + href
+                    else:
+                        full_url = self.base_url + '/' + href
+
+                    # articleView가 포함된 URL만 (실제 기사)
+                    if 'articleView' in full_url and full_url not in seen:
+                        seen.add(full_url)
+                        urls.append(full_url)
+                        self.logger.info(f"기사 URL 수집: {full_url}")
+
         self.logger.info(f"총 {len(urls)}개 기사 URL 수집 완료")
         return urls
     

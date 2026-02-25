@@ -29,19 +29,32 @@ class ChungcheongCrawler(BaseCrawler):
         )
 
     def get_article_urls(self) -> List[str]:
-        url = f'{self.base_url}/news/articleList.html?sc_section_code=S1N3&view_type=sm'
-        soup = self.fetch_page(url)
-        if not soup:
-            return []
-
         urls = []
-        for item in soup.select('div.list-block .list-titles a'):
-            href = item.get('href')
-            if not href:
-                continue
-            full_url = href if href.startswith('http') else self.base_url + href
-            if full_url not in urls:
-                urls.append(full_url)
+        seen = set()
+        for page in range(1, 21):
+            url = f'{self.base_url}/news/articleList.html?sc_section_code=S1N3&view_type=sm&page={page}'
+            soup = self.fetch_page(url)
+            if not soup:
+                self.logger.info(f"  페이지 {page}: 페이지 로드 실패 - 수집 완료")
+                break
+
+            items = soup.select('div.list-block .list-titles a')
+            if not items:
+                self.logger.info(f"  페이지 {page}: 더 이상 기사 없음 - 수집 완료")
+                break
+
+            page_start_urls = len(urls)
+            for item in items:
+                href = item.get('href')
+                if not href:
+                    continue
+                full_url = href if href.startswith('http') else self.base_url + href
+                if full_url not in seen:
+                    seen.add(full_url)
+                    urls.append(full_url)
+            
+            new_urls = len(urls) - page_start_urls
+            self.logger.info(f"  페이지 {page}: {new_urls}개 URL 수집 (누계: {len(urls)}개)")
 
         return urls
 
