@@ -6,6 +6,7 @@ selenium==4.15.0
 # 데이터 처리
 pandas==2.1.0
 numpy==1.26.0
+statsmodels>=0.14.0
 
 # 한국어 처리
 jpype1>=1.6.0
