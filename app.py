@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -24,14 +23,15 @@ except ImportError:
 
 # 3. 데이터 로드 및 시각화 유틸리티
 @st.cache_data(ttl=600)
-def load_official_map():
+def load_official_map(start_date, end_date):
     """기존 지도 모듈을 사용하여 원본 news_map_geo.html 업데이트 및 로드"""
     if not MAP_MODULE_AVAILABLE: return None
     official_path = os.path.join(map_module_path, 'news_map_geo.html')
     
     # 원본 모듈을 그대로 실행하여 파일 업데이트 (통합 DB는 db_loader.py에서 처리됨)
     generator = NewsMapGeneratorGeo()
-    generator.generate(official_path)
+    print(f"[DEBUG] 지도 생성에 사용되는 start_date: {start_date}, end_date: {end_date}")
+    generator.generate(start_date, end_date, official_path)
     
     if os.path.exists(official_path):
         with open(official_path, 'r', encoding='utf-8') as f:
@@ -213,7 +213,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 mid_col1, mid_col2 = st.columns([1.5, 1])
 with mid_col1:
     st.subheader(f"📍 인터랙티브 경제 지도")
-    map_html_content = load_official_map()
+    map_html_content = load_official_map(start_date, end_date)
     if map_html_content:
         import streamlit.components.v1 as components
         components.html(map_html_content, height=600, scrolling=True)
@@ -282,14 +282,20 @@ if not chart_df.empty:
     ))
 
 
-    # ✅ 자산 가격 선 그래프
-    fig.add_trace(go.Scatter(
-        x=chart_df['date'],
-        y=chart_df['asset_price'],
-        name=asset_type,
-        line=dict(color='firebrick', width=3),
-        yaxis='y2'
-    ))
+    # chart_df 컬럼명 및 데이터 확인 (디버깅용)
+    print('chart_df.columns:', chart_df.columns)
+    print('chart_df.head():', chart_df.head())
+    # ✅ 자산 가격 선 그래프 (asset_price 컬럼이 있을 때만)
+    if 'asset_price' in chart_df.columns:
+        fig.add_trace(go.Scatter(
+            x=chart_df['date'],
+            y=chart_df['asset_price'],
+            name=asset_type,
+            line=dict(color='firebrick', width=3),
+            yaxis='y2'
+        ))
+    else:
+        print("[경고] chart_df에 'asset_price' 컬럼이 없습니다. 선 그래프를 그리지 않습니다.")
 
     # ✅ 레이아웃 유지 (0~1 고정)
     fig.update_layout(
