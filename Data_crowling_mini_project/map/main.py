@@ -21,7 +21,7 @@ def main():
     try:
         # 지도 생성
         generator = NewsMapGeneratorGeo()
-        generator.generate(output_file, max_news=10)
+        generator.generate(output_file)
         
         print()
         print("=" * 60)
