@@ -11,6 +11,7 @@ from base_crawler import BaseCrawler
 from typing import List, Dict, Optional
 from datetime import datetime
 import re
+import base64
 
 
 class GyeongsangCrawler(BaseCrawler):
@@ -29,19 +30,38 @@ class GyeongsangCrawler(BaseCrawler):
         )
 
     def get_article_urls(self) -> List[str]:
-        url = f'{self.base_url}/list.php?part_idx=300'
-        soup = self.fetch_page(url)
-        if not soup:
-            return []
-
         urls = []
-        for link_elem in soup.select('.list_type1 li a[href*="view.php"]'):
-            href = link_elem.get('href')
-            if not href:
-                continue
-            full_url = href if href.startswith('http') else f'{self.base_url}/' + href.lstrip('/')
-            if full_url not in urls:
-                urls.append(full_url)
+        seen = set()
+        per_page = 15
+        search_items_raw = 'part_idx=300&view_cnt=&group_id=&view_page=&search_date_no=&order_type=&search_order=&writer='
+        search_items = base64.b64encode(search_items_raw.encode('utf-8')).decode('ascii') + '||'
+        for page in range(1, 21):
+            start_page = (page - 1) * per_page
+            board_data_raw = f'startPage={start_page}'
+            board_data = base64.b64encode(board_data_raw.encode('utf-8')).decode('ascii') + '||'
+            url = f'{self.base_url}/list.php?board_data={board_data}&search_items={search_items}'
+            soup = self.fetch_page(url)
+            if not soup:
+                self.logger.info(f"  페이지 {page}: 페이지 로드 실패 - 수집 완료")
+                break
+
+            items = soup.select('.list_type1 li a[href*="view.php"]')
+            if not items:
+                self.logger.info(f"  페이지 {page}: 더 이상 기사 없음 - 수집 완료")
+                break
+
+            page_start_urls = len(urls)
+            for link_elem in items:
+                href = link_elem.get('href')
+                if not href:
+                    continue
+                full_url = href if href.startswith('http') else f'{self.base_url}/' + href.lstrip('/')
+                if full_url not in seen:
+                    seen.add(full_url)
+                    urls.append(full_url)
+
+            new_urls = len(urls) - page_start_urls
+            self.logger.info(f"  페이지 {page}: {new_urls}개 URL 수집 (누계: {len(urls)}개)")
 
         return urls
 

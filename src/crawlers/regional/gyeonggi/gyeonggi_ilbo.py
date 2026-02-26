@@ -34,23 +34,34 @@ class GyeonggiIlboCrawler(BaseCrawler):
         """
         경기일보 경제섹션 URL 추출
         """
-        # 경제 섹션 URL
-        url = f'{self.base_url}/list/25'
-        soup = self.fetch_page(url)
-        
-        if not soup:
-            return []
-        
         urls = []
-        # h3 태그 안의 a 태그에서 기사 링크 추출
-        articles = soup.select('h3 a[href*="/article/"]')
-        
-        for article in articles[:50]:
-            href = article.get('href')
-            if href:
-                full_url = href if href.startswith('http') else self.base_url + href
-                urls.append(full_url)
-        
+        seen = set()
+        for page in range(1, 21):
+            url = f'{self.base_url}/list/25?page={page}'
+            soup = self.fetch_page(url)
+
+            if not soup:
+                self.logger.info(f"  페이지 {page}: 페이지 로드 실패 - 수집 완료")
+                break
+
+            # h3 태그 안의 a 태그에서 기사 링크 추출
+            articles = soup.select('h3 a[href*="/article/"]')
+            if not articles:
+                self.logger.info(f"  페이지 {page}: 더 이상 기사 없음 - 수집 완료")
+                break
+
+            page_start_urls = len(urls)
+            for article in articles:
+                href = article.get('href')
+                if href:
+                    full_url = href if href.startswith('http') else self.base_url + href
+                    if full_url not in seen:
+                        seen.add(full_url)
+                        urls.append(full_url)
+            
+            new_urls = len(urls) - page_start_urls
+            self.logger.info(f"  페이지 {page}: {new_urls}개 URL 수집 (누계: {len(urls)}개)")
+
         return urls
     
     def parse_article(self, url: str) -> Optional[Dict]:
