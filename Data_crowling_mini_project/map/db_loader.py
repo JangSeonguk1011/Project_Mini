@@ -19,13 +19,8 @@ class NewsDBLoader:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(os.path.dirname(current_dir))
         
-        # 통합할 DB 경로 리스트
-        self.db_paths = [
-            os.path.join(project_root, 'data', 'news.db'),
-            os.path.join(project_root, 'data', 'news_scraped.db')
-        ]
-        
-        # 유효한 DB 경로만 필터링
+        # news.db만 사용
+        self.db_paths = [os.path.join(project_root, 'data', 'news.db')]
         self.db_paths = [p for p in self.db_paths if os.path.exists(p)]
         
         if not self.db_paths:
@@ -109,33 +104,33 @@ class NewsDBLoader:
 
     def get_keywords_by_regions(self, regions: List[str]) -> List[str]:
         """
-        여러 지역의 키워드 목록 가져오기
-        
+        여러 지역의 키워드 목록 가져오기 (모든 DB에서 병합)
         Args:
             regions: 지역명 리스트
-        
         Returns:
             키워드 문자열 리스트
         """
         if not regions:
             return []
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        placeholders = ",".join(["?"] * len(regions))
-        query = f"""
-            SELECT keyword
-            FROM news
-            WHERE region IN ({placeholders})
-              AND keyword IS NOT NULL
-              AND TRIM(keyword) != ''
-        """
-        cursor.execute(query, regions)
-
-        keywords = [row[0] for row in cursor.fetchall()]
-        conn.close()
-
+        keywords = []
+        for db_path in self.db_paths:
+            try:
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                placeholders = ",".join(["?"] * len(regions))
+                query = f"""
+                    SELECT keyword
+                    FROM news
+                    WHERE region IN ({placeholders})
+                      AND keyword IS NOT NULL
+                      AND TRIM(keyword) != ''
+                """
+                cursor.execute(query, regions)
+                keywords.extend([row[0] for row in cursor.fetchall()])
+                conn.close()
+            except Exception:
+                continue
         return keywords
 
 

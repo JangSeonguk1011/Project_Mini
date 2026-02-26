@@ -308,13 +308,13 @@ class NewsMapGeneratorGeo:
                 latest_news = self.loader.get_latest_news_by_region(main_region, limit=5)
                 news_items = []
                 for news in latest_news:
-                    economic_keywords = []
+                    keywords = []
                     k_str = news.get('keyword', '-')
                     if k_str and k_str != '-':
                         for token in self._split_keywords(k_str):
-                            if self._is_economic_keyword(token) and len(economic_keywords) < 5:
-                                economic_keywords.append(token)
-                    news_items.append({'title': news.get('title', '제목 없음'), 'keywords': economic_keywords})
+                            if len(keywords) < 5:
+                                keywords.append(token)
+                    news_items.append({'title': news.get('title', '제목 없음'), 'keywords': keywords})
                 region_data[main_region] = news_items
         
         region_data_json = json.dumps(region_data, ensure_ascii=False)
