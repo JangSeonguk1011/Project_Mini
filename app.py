@@ -17,15 +17,11 @@ map_module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Data_
 if map_module_path not in sys.path:
     sys.path.append(map_module_path)
 
-# 외부 모듈 임포트 시도
+# 외부 모듈 임포트
 try:
+    from map_generator_geo import NewsMapGeneratorGeo
     from region_coords import REGION_COORDS, KOREA_CENTER, DEFAULT_ZOOM
-    from color_mapper import (
-        get_sentiment_color as ext_get_sentiment_color,
-        get_sentiment_label as ext_get_sentiment_label,
-        get_sentiment_icon,
-        get_region_color_by_avg
-    )
+    from color_mapper import get_sentiment_label, get_sentiment_color
     MAP_MODULE_AVAILABLE = True
 except ImportError:
     MAP_MODULE_AVAILABLE = False
@@ -37,84 +33,7 @@ except ImportError:
     fdr = None
 
 # ==========================================
-# 0. 외부 모듈 시각화 로직 이식 (Data_crowling_mini_project/map 기준)
-# ==========================================
-
-def get_sentiment_color(sentiment_score: float) -> str:
-    """color_mapper.py 원본 로직"""
-    if sentiment_score is None or sentiment_score == 0: return 'gray'
-    elif sentiment_score > 0.5: return 'blue'
-    elif sentiment_score > 0: return 'lightgreen'
-    elif sentiment_score < -0.5: return 'red'
-    else: return 'lightred'
-
-def get_sentiment_icon(sentiment_score: float) -> str:
-    """color_mapper.py 원본 로직"""
-    if sentiment_score is None or sentiment_score == 0: return 'info-sign'
-    elif sentiment_score > 0: return 'arrow-up'
-    else: return 'arrow-down'
-
-def get_region_color_by_avg(avg_sentiment: float) -> str:
-    """color_mapper.py 원본 로직"""
-    if avg_sentiment is None or avg_sentiment == 0: return '#FFFFFF'
-    elif avg_sentiment > 0.3: return '#0066CC'
-    elif avg_sentiment > 0: return '#81C784'
-    elif avg_sentiment < -0.3: return '#CC0000'
-    else: return '#FF6666'
-
-def get_sentiment_label(sentiment_score: float) -> str:
-    """color_mapper.py 원본 로직"""
-    if sentiment_score is None: return '분석 안 됨'
-    elif sentiment_score == 0: return '중립'
-    elif sentiment_score > 0.5: return '매우 긍정적'
-    elif score := sentiment_score:
-        if score > 0.2: return '긍정적'
-        elif score > 0: return '약간 긍정적'
-        elif score < -0.5: return '매우 부정적'
-        elif score < -0.2: return '부정적'
-    return '약간 부정적'
-
-def create_popup_html(news_list, region):
-    """map_generator.py 원본 _create_popup_html 로직"""
-    if not news_list: return f"<h4>{region}</h4><p>뉴스가 없습니다.</p>"
-    
-    html_content = f"""
-    <div style="width: 400px; max-height: 500px; overflow-y: auto; font-family: Arial, sans-serif;">
-        <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">
-            📍 {region} ({len(news_list)}개 뉴스)
-        </h3>
-    """
-    for i, news in enumerate(news_list[:10]):
-        title = html.escape(news.get('title', '제목 없음')[:80])
-        url = news.get('url', '#')
-        keyword = news.get('keyword', '키워드 없음')
-        sentiment = news.get('sentiment_score', 0) or 0
-        sentiment_label = get_sentiment_label(sentiment)
-        sentiment_color = 'blue' if sentiment > 0 else 'red' if sentiment < 0 else 'gray'
-        published_time = news.get('published_time', '날짜 없음')
-        
-        html_content += f"""
-        <div style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-left: 4px solid {sentiment_color}; border-radius: 4px;">
-            <div style="margin-bottom: 5px;">
-                <strong style="color: #333; font-size: 14px;">{i+1}. {title}</strong>
-            </div>
-            <div style="font-size: 11px; color: #666; margin: 5px 0;">
-                <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">🏷️ {keyword}</span>
-                <span style="background: #{'e8f5e9' if sentiment > 0 else 'ffebee' if sentiment < 0 else 'f5f5f5'}; padding: 2px 6px; border-radius: 3px;">
-                    {sentiment_label} ({sentiment:.2f})
-                </span>
-            </div>
-            <div style="font-size: 11px; color: #999; margin: 5px 0;">📅 {published_time}</div>
-            <div style="margin-top: 5px;"><a href="{url}" target="_blank" style="color: #1976d2; text-decoration: none; font-size: 11px;">🔗 기사 보기</a></div>
-        </div>
-        """
-    if len(news_list) > 10:
-        html_content += f'<div style="margin: 10px 0; padding: 10px; background: #fff3e0; border-radius: 4px; text-align: center; font-size: 12px; color: #666;">+ {len(news_list) - 10}개 더 있음</div>'
-    html_content += "</div>"
-    return html_content
-
-# ==========================================
-# 0-1. 데이터베이스 연결 및 통합 로직
+# 0. 데이터베이스 연결 및 통합 로직 (지도 이외의 기능용)
 # ==========================================
 def get_db_conn(db_name):
     """DB 연결 (data 폴더 내)"""
@@ -165,18 +84,23 @@ st.markdown("""
 # ==========================================
 
 @st.cache_data(ttl=600) # 10분간 캐싱
-def get_map_html():
-    """지도 모듈을 사용하여 기본 HTML 생성"""
+def load_official_map():
+    """기존 지도 모듈을 실행하여 news_map_geo.html을 업데이트하고 내용을 불러옴"""
     if not MAP_MODULE_AVAILABLE: return None
     from map_generator_geo import NewsMapGeneratorGeo
     
-    # 1. 모듈을 사용하여 기본 지도 생성
-    generator = NewsMapGeneratorGeo()
-    tmp_path = "data/temp_news_map.html"
-    generator.generate(tmp_path, max_news=10)
+    # 1. 기존 모듈 경로 설정
+    official_map_path = os.path.join('Data_crowling_mini_project', 'map', 'news_map_geo.html')
     
-    with open(tmp_path, 'r', encoding='utf-8') as f:
-        return f.read()
+    # 2. 기존 모듈을 그대로 사용하여 파일 업데이트
+    generator = NewsMapGeneratorGeo()
+    generator.generate(official_map_path, max_news=10)
+    
+    # 3. 업데이트된 파일을 불러오기
+    if os.path.exists(official_map_path):
+        with open(official_map_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    return None
 
 def get_metrics_data(start_date, end_date, region):
     """선택된 지역과 날짜 범위에 따른 메트릭 계산"""
@@ -266,24 +190,35 @@ def get_issue_list_data(region):
     except Exception as e:
         return pd.DataFrame(columns=['rank', 'issue', 'sentiment', 'score_display', 'count'])
 
-def get_chart_data(start_date, end_date, region):
+def get_chart_data(start_date, end_date, region, asset_type):
+    """자산 종류와 날짜 범위에 따른 감성-가격 데이터 로드"""
     query = "SELECT date(published_time) as date, sentiment_score, url FROM news WHERE date(published_time) BETWEEN ? AND ?"
     df = get_combined_df(query, params=(start_date.isoformat(), end_date.isoformat()))
     
     if df.empty:
         return pd.DataFrame()
 
-    df_s = df.groupby('date')['sentiment_score'].mean().reset_index()
-    df_s.columns = ['date', 'sentiment_index']
+    # 감성 점수와 뉴스 건수를 함께 집계
+    df_s = df.groupby('date').agg(
+        sentiment_index=('sentiment_score', 'mean'),
+        news_count=('sentiment_score', 'count')
+    ).reset_index()
+    
+    # 자산 종류에 따른 심볼 매핑
+    symbol = 'KS11' if "KOSPI" in asset_type or "코스피" in asset_type else 'KQ11'
+    base_price = 2500 if symbol == 'KS11' else 800
     
     if fdr is not None:
         try:
-            df_p = fdr.DataReader('KS11', start_date, end_date)[['Close']].reset_index()
+            df_p = fdr.DataReader(symbol, start_date, end_date)[['Close']].reset_index()
             df_p.columns = ['date', 'asset_price']
             df_p['date'] = df_p['date'].dt.date.astype(str)
-            return pd.merge(df_s, df_p, on='date', how='inner')
+            merged = pd.merge(df_s, df_p, on='date', how='inner')
+            if not merged.empty: return merged
         except: pass
-    df_s['asset_price'] = 2500 + (df_s['sentiment_index'] - 0.5).cumsum() * 50
+    
+    # 데이터가 없거나 FinanceDataReader 실패 시 보정된 더미 생성
+    df_s['asset_price'] = base_price + (df_s['sentiment_index'] - 0.5).cumsum() * (50 if symbol == 'KS11' else 15)
     return df_s
 
 # ==========================================
@@ -317,7 +252,7 @@ mid_col1, mid_col2 = st.columns([1.5, 1])
 with mid_col1:
     st.subheader(f"📍 {selected_region} 인터랙티브 경제 지도")
     
-    map_html = get_map_html()
+    map_html = load_official_map()
     if map_html:
         import streamlit.components.v1 as components
         components.html(map_html, height=600, scrolling=True)
@@ -362,8 +297,8 @@ with mid_col2:
 # 6. 중단 구역 (Combo Chart)
 # ==========================================
 st.markdown("<br>", unsafe_allow_html=True)
-st.subheader("📊 지역 감성 지수 및 자산 가격 추이")
-chart_df = get_chart_data(start_date, end_date, selected_region)
+st.subheader(f"📊 {selected_region} 감성 지수 및 {asset_type} 추이")
+chart_df = get_chart_data(start_date, end_date, selected_region, asset_type)
 if not chart_df.empty:
     fig = go.Figure()
     fig.add_trace(go.Bar(x=chart_df['date'], y=chart_df['sentiment_index'], name="지역 감성 지수", marker_color='rgba(100, 149, 237, 0.6)', yaxis='y1'))
@@ -378,18 +313,122 @@ st.markdown("<br>", unsafe_allow_html=True)
 tab1, tab2, tab3, tab4 = st.tabs(["상관관계 분석", "감성 타임라인", "자산 가격 추이", "감성 기반 뉴스"])
 
 with tab1:
+    st.write("### 🔍 감성-자산 다각도 상관 분석")
+    
+    # 1단: 기존 히트맵 및 산점도
     btm_col1, btm_col2 = st.columns(2)
     with btm_col1:
-        st.write("### 🔍 감성-자산 상관계수 히트맵")
+        st.write("#### 🌡️ 감성-자산 상관계수 히트맵")
         labels = ['감성', 'KOSPI', 'KOSDAQ']
-        st.plotly_chart(px.imshow(np.random.uniform(0.6, 0.9, (3, 3)), text_auto=True, x=labels, y=labels, color_continuous_scale='RdBu_r'), width="stretch")
+        # 기존 로직 유지 (더미 기반)
+        st.plotly_chart(px.imshow(np.random.uniform(0.6, 0.9, (3, 3)), 
+                                  text_auto=True, x=labels, y=labels, 
+                                  color_continuous_scale='RdBu_r'), use_container_width=True)
     with btm_col2:
-        st.write("### 📉 감성 vs 자산 수익률 산점도")
+        st.write("#### 📉 감성 vs 자산 가격 산점도")
         if not chart_df.empty:
-            st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), width="stretch")
+            fig_scatter = px.scatter(chart_df, x='sentiment_index', y='asset_price', 
+                                     trendline="ols", template="plotly_white")
+            st.plotly_chart(fig_scatter, use_container_width=True)
+            
+    st.markdown("---")
+    
+    # 2단: 상세 수치 및 이동 상관계수
+    btm_col3, btm_col4 = st.columns([1, 2])
+    with btm_col3:
+        st.write("#### 🔢 상세 상관 지표")
+        if not chart_df.empty:
+            corr_val = chart_df['sentiment_index'].corr(chart_df['asset_price'])
+            st.metric("실제 데이터 상관계수", f"{corr_val:.3f}")
+            st.info("상관계수는 1에 가까울수록 두 지표가 같은 방향으로 움직임을 뜻합니다.")
+            
+    with btm_col4:
+        st.write("#### 📈 기간별 상관관계 변화 (7일 이동 상관계수)")
+        if len(chart_df) >= 7:
+            df_corr = chart_df.copy()
+            df_corr['rolling_corr'] = df_corr['sentiment_index'].rolling(7).corr(df_corr['asset_price'])
+            fig_rolling = px.line(df_corr, x='date', y='rolling_corr', 
+                                  labels={'rolling_corr': '상관계수'})
+            fig_rolling.add_hline(y=0, line_dash="dash", line_color="gray")
+            fig_rolling.update_layout(yaxis=dict(range=[-1, 1]), template="plotly_white", height=300)
+            st.plotly_chart(fig_rolling, use_container_width=True)
+        else:
+            st.warning("분석을 위한 충분한 데이터(7일 이상)가 없습니다.")
 
-with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
-with tab3: st.info("💹 자산별 상세 기술적 지표 및 변동성 분석 영역입니다.")
+with tab2:
+    st.write(f"### 🕒 {selected_region} 감성 및 뉴스 발행량 타임라인")
+    if not chart_df.empty:
+        fig_timeline = go.Figure()
+        # 뉴스 건수 막대 (이중축 - y2)
+        fig_timeline.add_trace(go.Bar(
+            x=chart_df['date'], y=chart_df['news_count'],
+            name="뉴스 발행 건수", marker_color='rgba(200, 200, 200, 0.3)',
+            yaxis='y2'
+        ))
+        # 평균 감성 선 (이중축 - y1)
+        fig_timeline.add_trace(go.Scatter(
+            x=chart_df['date'], y=chart_df['sentiment_index'],
+            mode='lines+markers', name="평균 감성 지수",
+            line=dict(color='#1f77b4', width=3),
+            marker=dict(size=8, color='#1f77b4')
+        ))
+        
+        fig_timeline.update_layout(
+            yaxis=dict(title="감성 지수", range=[0, 1], side='left'),
+            yaxis2=dict(title="뉴스 건수", side='right', overlaying='y', showgrid=False),
+            height=500, template="plotly_white",
+            hovermode="x unified",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_timeline, use_container_width=True)
+    else:
+        st.info("데이터가 부족합니다.")
+
+with tab3:
+    st.write(f"### 📈 {asset_type} 성과 및 위험 분석")
+    if not chart_df.empty:
+        df_stat = chart_df.copy()
+        df_stat['returns'] = df_stat['asset_price'].pct_change() * 100
+        df_stat['cum_return'] = (1 + df_stat['returns'] / 100).cumprod() - 1
+        df_stat['cum_return_pct'] = df_stat['cum_return'] * 100
+        
+        col_st1, col_st2 = st.columns(2)
+        
+        with col_st1:
+            st.write("#### ⚖️ 감성-수익률 사분면 분석")
+            # 사분면 분류 (감성 0.5 기준, 수익률 0 기준)
+            fig_quad = px.scatter(df_stat.dropna(), x='sentiment_index', y='returns',
+                                  color='returns', color_continuous_scale='RdBu_r',
+                                  labels={'sentiment_index': '감성 지수', 'returns': '일별 수익률 (%)'},
+                                  title="감성 변화에 따른 수익률 분포")
+            fig_quad.add_hline(y=0, line_dash="dash", line_color="black", opacity=0.3)
+            fig_quad.add_vline(x=0.5, line_dash="dash", line_color="black", opacity=0.3)
+            fig_quad.update_layout(template="plotly_white", height=400)
+            st.plotly_chart(fig_quad, use_container_width=True)
+            st.caption("1사분면(우상단): 긍정적 뉴스 & 가격 상승 (동행 호재)")
+            
+        with col_st2:
+            st.write("#### 💰 누적 수익률 추이 (%)")
+            fig_cum = px.area(df_stat, x='date', y='cum_return_pct',
+                              labels={'cum_return_pct': '누적 수익률 (%)'},
+                              title=f"분석 기간 내 {asset_type} 성과")
+            fig_cum.add_hline(y=0, line_dash="solid", line_color="gray")
+            fig_cum.update_traces(line_color="firebrick", fillcolor="rgba(178, 34, 34, 0.2)")
+            fig_cum.update_layout(template="plotly_white", height=400)
+            st.plotly_chart(fig_cum, use_container_width=True)
+
+        st.markdown("---")
+        # 추가 지표 표시
+        m_col1, m_col2, m_col3 = st.columns(3)
+        with m_col1:
+            st.metric("최고 누적 수익률", f"{df_stat['cum_return_pct'].max():.2f}%")
+        with m_col2:
+            st.metric("평균 일일 변동폭", f"{df_stat['returns'].abs().mean():.2f}%")
+        with m_col3:
+            hit_rate = len(df_stat[(df_stat['sentiment_index'] > 0.5) & (df_stat['returns'] > 0)]) / len(df_stat[df_stat['sentiment_index'] > 0.5]) * 100 if len(df_stat[df_stat['sentiment_index'] > 0.5]) > 0 else 0
+            st.metric("긍정 감성 적중률", f"{hit_rate:.1f}%")
+    else:
+        st.info("성과 분석을 위한 데이터가 부족합니다.")
 with tab4:
     st.write(f"### 📰 {selected_region} 최신 감성 뉴스 리스트")
     latest_news_query = "SELECT title, sentiment_score, published_time as date, url, region FROM news"
