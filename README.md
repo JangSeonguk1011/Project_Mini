@@ -100,10 +100,9 @@
 ### 2️⃣ 인터랙티브 지역별 지도 시각화 및 지역별 핵심 이슈(키워드) 확인 (Geospatial Analysis)
 - **GIS 기반 감성 맵**: Folium 지도상에 지역별 뉴스 밀도와 긍/부정 지수를 컬러 맵으로 시각화하여 지역별 경제 온도를 직관적으로 표시합니다.
 - **지역별 핵심 이슈(키워드) 분석**: **TF-IDF 및 형태소 분석**을 기반으로 지역별 핵심 경제 키워드를 도출합니다. '가덕도 신공항', '반도체 클러스터' 등 각 지역의 특수성이 반영된 핵심 이슈를 빈도 분석과 가중치 계산을 통해 추출합니다.
-- **워드클라우드 및 데이터 드릴다운**: 특정 지역 클릭 시 해당 권역의 핵심 키워드를 **워드클라우드(WordCloud)** 형식으로 시각화하여 제공하며, 주요 경제 뉴스 헤드라인과 함께 입체적인 여론 분석이 가능하도록 구현했습니다.
+- **인터랙티브 데이터 드릴다운**: 지도상의 특정 지역 클릭 시 해당 권역의 긍/부정 뉴스 통계, 평균 감성 지수, 그리고 최신 뉴스 목록을 포함한 상세 분석 리포트를 팝업 형태로 즉각 제공하여 분석 결과의 근거를 명확히 제시합니다.
 <img width="2560" height="1321" alt="지도 시각화 1" src="https://github.com/user-attachments/assets/e6ec4c71-b5ec-4e53-a60d-54536225336f" />
-<img width="2560" height="1311" alt="지도 시각화 2 src="https://github.com/user-attachments/assets/f5b4b677-7f7c-45f7-8bd8-c4931ebb9704" />
-
+<img width="2560" height="1321" alt="지도 시각화 2" src="https://github.com/user-attachments/assets/de8abf24-edab-4d5e-91b9-26520e7e94ca" />
 
 &nbsp;
 ### 3️⃣ 자산 상관관계 분석 (Market Correlation Analysis)
