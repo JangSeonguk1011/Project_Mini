@@ -21,8 +21,8 @@ def get_sentiment_color(sentiment_score: float) -> str:
     """
     if sentiment_score is None or sentiment_score == 0:
         return 'gray'  # 중립 또는 데이터 없음
-    elif sentiment_score > 0.5:
-        return 'blue'  # 강한 긍정
+    elif sentiment_score > 0.8:
+        return 'blue'  # 매우 강한 긍정
     elif sentiment_score > 0:
         return 'lightgreen'  # 약한 긍정 (연한 파랑 -> 연한 초록으로 수정)
     elif sentiment_score < -0.5:
@@ -61,8 +61,8 @@ def get_region_color_by_avg(avg_sentiment: float) -> str:
     """
     if avg_sentiment is None or avg_sentiment == 0:
         return '#FFFFFF'  # 흰색
-    elif avg_sentiment > 0.3:
-        return '#0066CC'  # 진한 파랑
+    elif avg_sentiment > 0.8:
+        return '#0066CC'  # 매우 강한 파랑
     elif avg_sentiment > 0:
         return '#81C784'  # 연한 초록 (연한 파랑 -> 연한 초록 #81C784로 수정)
     elif avg_sentiment < -0.3:
@@ -85,7 +85,7 @@ def get_sentiment_label(sentiment_score: float) -> str:
         return '분석 안 됨'
     elif sentiment_score == 0:
         return '중립'
-    elif sentiment_score > 0.5:
+    elif sentiment_score > 0.8:
         return '매우 긍정적'
     elif sentiment_score > 0.2:
         return '긍정적'
@@ -107,8 +107,8 @@ def get_color_legend() -> dict:
         {label: color} 딕셔너리
     """
     return {
-        '매우 긍정적 (> 0.5)': 'blue',
-        '긍정적 (0 ~ 0.5)': 'lightgreen', # 연한 초록으로 수정
+        '매우 긍정적 (> 0.8)': 'blue',
+        '긍정적 (0 ~ 0.8)': 'lightgreen', # 연한 초록으로 수정
         '중립 (0)': 'white',
         '부정적 (-0.5 ~ 0)': 'lightred',
         '매우 부정적 (< -0.5)': 'red',

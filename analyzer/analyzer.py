@@ -1,16 +1,18 @@
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import sqlite3
 import logging
 import time
 import os
-import log_config
-from sentiment import NewsSentimentAnalyzer
+from analyzer import log_config
+from analyzer.sentiment import NewsSentimentAnalyzer
 
 logger = logging.getLogger(__name__)
 
 # 프로젝트 루트 기준으로 경로 설정
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "data", "news.db")
-
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 def run_analysis():
     start_time = time.time()
