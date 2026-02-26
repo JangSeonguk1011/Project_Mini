@@ -2,6 +2,7 @@
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 selenium>=4.15.0
+finance-datareader>=0.9.60
 
 # 데이터 처리
 pandas>=2.1.0

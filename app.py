@@ -195,7 +195,7 @@ with mid_col2:
 # 6. 중단 구역 (Combo Chart)
 # ==========================================
 st.markdown("<br>", unsafe_allow_html=True)
-st.subheader("📊 지역 감성 지수 및 자산 가격 추이")
+st.subheader(f"📊 {selected_region} 감성 지수 및 자산 가격 추이")
 
 # [주석] 사이드바의 asset_type(라디오 버튼 값)을 함수 인자로 전달합니다.
 chart_df = get_chart_data(start_date, end_date, selected_region, asset_type)
@@ -254,7 +254,91 @@ with tab1:
         if not chart_df.empty:
             st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), width="stretch")
 
-with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
+with tab2:
+    st.write(f"### 🕸️ {selected_region} 요일별 경제 심리 레이더")
+    
+    # 1. 데이터 가공: 시간대별 및 지역별 분석을 위한 데이터 추출
+    # [수정] 지역(region) 필드를 쿼리에 추가하여 필터링이 가능하게 함
+    timeline_query = "SELECT published_time, sentiment_score, title, region FROM news"
+    t_df = get_combined_df(timeline_query)
+    
+    if not t_df.empty:
+        t_df['published_time'] = pd.to_datetime(t_df['published_time'])
+        
+        # [필터 1] 날짜 범위 필터링
+        t_df = t_df[(t_df['published_time'].dt.date >= start_date) & (t_df['published_time'].dt.date <= end_date)]
+        
+        # [필터 2] 선택된 지역 필터링 (사이드바의 selected_region 변수 활용)
+        if selected_region != "전국":
+            t_df = t_df[t_df['region'].str.contains(selected_region, na=False)]
+        
+        if not t_df.empty:
+            # 요일 데이터 생성
+            t_df['day_of_week'] = t_df['published_time'].dt.day_name()
+            day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            day_labels = ['월', '화', '수', '목', '금', '토', '일']
+            
+            # 요일별 평균 감성 계산
+            radar_df = t_df.groupby('day_of_week')['sentiment_score'].mean().reset_index()
+            
+            # 요일 순서 정렬을 위한 카테고리 설정
+            radar_df['day_of_week'] = pd.Categorical(radar_df['day_of_week'], categories=day_order, ordered=True)
+            radar_df = radar_df.sort_values('day_of_week')
+            
+            # 2. 레이더 차트 시각화
+            # [Image of a radar chart comparing values across different categories like days of the week]
+            fig_radar = go.Figure()
+            
+            fig_radar.add_trace(go.Scatterpolar(
+                r=radar_df['sentiment_score'],
+                theta=day_labels,  # 보기 편하게 한글 요일로 표시
+                fill='toself',
+                name=f'{selected_region} 감성 지수',
+                line=dict(color='#1f77b4', width=2),
+                fillcolor='rgba(31, 119, 180, 0.3)'
+            ))
+            
+            fig_radar.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True, 
+                        range=[0, 1],
+                        tickvals=[0, 0.25, 0.5, 0.75, 1.0],
+                        ticktext=['0', '', '중립', '', '1']
+                    )
+                ),
+                showlegend=False,
+                height=450,
+                margin=dict(t=40, b=40)
+            )
+            
+            st.plotly_chart(fig_radar, use_container_width=True)
+            
+            # 3. 추가 정보: 가장 극단적인 감성의 뉴스 요약
+            # [수정] 위에서 필터링된 t_df(지역/기간 반영) 내에서 가장 높은/낮은 점수를 찾음
+            st.write("---")
+            st.write(f"#### 🔍 {selected_region} 주요 감성 변곡점 (최근)")
+            
+            # 중복 데이터가 있을 수 있으므로 idxmax/idxmin으로 행 추출
+            best_idx = t_df['sentiment_score'].idxmax()
+            worst_idx = t_df['sentiment_score'].idxmin()
+            
+            ex_col1, ex_col2 = st.columns(2)
+            with ex_col1:
+                st.success(f"**최고 긍정 뉴스**")
+                st.write(f"{t_df.loc[best_idx, 'title']}")
+                st.caption(f"점수: {t_df.loc[best_idx, 'sentiment_score']:.2f}")
+                
+            with ex_col2:
+                st.error(f"**최고 부정 뉴스**")
+                st.write(f"{t_df.loc[worst_idx, 'title']}")
+                st.caption(f"점수: {t_df.loc[worst_idx, 'sentiment_score']:.2f}")
+                
+        else:
+            st.info(f"현재 선택된 기간 및 지역({selected_region})에 해당하는 데이터가 없습니다.")
+    else:
+        st.info("데이터베이스에서 뉴스 정보를 불러올 수 없습니다.")
+        
 with tab3: st.info("💹 자산별 상세 기술적 지표 및 변동성 분석 영역입니다.")
 with tab4:
     st.write(f"#### 📰 {selected_region} 최신 감성 뉴스")
