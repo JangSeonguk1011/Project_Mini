@@ -150,15 +150,21 @@ st.sidebar.markdown("---")
 start_date = st.sidebar.date_input("분석 시작일", datetime.now() - timedelta(days=30))
 end_date = st.sidebar.date_input("분석 종료일", datetime.now())
 asset_type = st.sidebar.radio("자산 종류", ["코스피(KOSPI)", "코스닥(KOSDAQ)"])
-selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "부산", "강원도", "충청도", "전라도", "경상도"])
+selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "강원도", "충청도", "전라도", "경상도"])
 
 m = get_metrics_data(start_date, end_date, selected_region)
 col1, col2, col3, col4 = st.columns(4)
-with col1: st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수 ({selected_region})</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
-with col2: st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성 ({selected_region})</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
-with col3: st.markdown(f'<div class="metric-card"><div class="metric-label">{asset_type} 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["k_change"]>0 else "#e74c3c"}">{m["k_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
-with col4: st.markdown(f'<div class="metric-card"><div class="metric-label">수집 뉴스량</div><div class="metric-value">{int(m["volatility"]*10)}건</div></div>', unsafe_allow_html=True)
 
+with col1: 
+    st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수 ({selected_region})</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
+with col2: 
+    st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성 ({selected_region})</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
+with col3: 
+    # 코스피(KOSPI) 변동률 고정 (k_change 사용)
+    st.markdown(f'<div class="metric-card"><div class="metric-label">코스피(KOSPI) 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["k_change"]>0 else "#e74c3c"}">{m["k_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
+with col4: 
+    # 수집 뉴스량 대신 코스닥(KOSDAQ) 변동률로 변경 (q_change 사용)
+    st.markdown(f'<div class="metric-card"><div class="metric-label">코스닥(KOSDAQ) 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["q_change"]>0 else "#e74c3c"}">{m["q_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 중앙 구역
