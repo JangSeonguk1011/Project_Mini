@@ -1,13 +1,1224 @@
 ======================================================================
 크롤링된 뉴스 기사 인덱스
-생성일시: 2026-02-24 16:16:58
-전체 기사 수: 1개
+생성일시: 2026-02-26 11:04:35
+전체 기사 수: 300개
 ======================================================================
 
 
-📍 경기도 (1개)
+📍 서울 (50개)
 ----------------------------------------------------------------------
-1. 설 명절 원산지 표시 위반 470곳 적발…배추김치 144건 최다
+1. SWM–스마트라이드, 상업용 여객 운송 및 교통약자를 위한 자울주행·운전자 보조 기술 공동개발 업무협약 체결
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/2026/02/26/20260226500076
+
+2. ‘경산의 센트럴파크’ 경산 상방공원 호반써밋 1단지 견본주택 개관
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/estate/2026/02/26/20260226500033
+
+3. 李 “주가조작 신고시 수백억 포상금…로또보다 쉽게 팔자 고쳐”
+   신문: 서울신문 | 날짜: 2026-02-25
+   URL: https://www.seoul.co.kr/news/economy/2026/02/25/20260225500318
+
+4. ‘21만전자’에 이재용 회장 주식재산만 ‘○○조원’…한달새 9조원 증가
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/industry/2026/02/26/20260226500037
+
+5. [포토] 코스피 6000 시대 개막
+   신문: 서울신문 | 날짜: 2026-02-25
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/25/20260225800001
+
+6. 불장 코스피, 불안도 ‘쑥’… ‘삼천닥’시대는 올까
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226029003
+
+7. 파죽지세 삼성전자, 장중 ‘21만전자’ 고지 올랐다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/finance/2026/02/26/20260226500028
+
+8. 李 ‘자사주 소각 의무화’ 결실… LS·한진처럼 경영권 꼼수 못 쓴다
+   신문: 서울신문 | 날짜: 2026-02-25
+   URL: https://www.seoul.co.kr/news/economy/2026/02/26/20260226004003
+
+9. 멀츠, ‘대한민국 일하기 좋은 기업’ 2년 연속 1위 달성
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/2026/02/26/20260226500065
+
+10. 연체채권 팔아치우면 끝?…“원채권 금융사에 고객보호책임 부여”
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/finance/2026/02/26/20260226500060
+
+11. 한국은행, 기준금리 연 2.50%로 6연속 ‘동결’…올해 성장률 1.8→2.0%, 내년 1.8%
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/finance/2026/02/26/20260226500054
+
+12. [속보] 한은, 기준금리 6연속 동결 연 2.50%… 성장률 전망치 1.8→2.0% 상향
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/2026/02/26/20260226500049
+
+13. [속보] 코스피 장중 6200선 돌파…삼성전자·하이닉스 신고가
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500048
+
+14. [서울데이터랩]‘비트맥스’ 29.94% 상승…실시간 상승률 1위
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500043
+
+15. [서울데이터랩]‘에이엔피’ 24.33% 폭등…실시간 상승률 1위
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500042
+
+16. 갤럭시 S26 예약하면 ‘용량 2배’ 업그레이드… 반값 보상 구독제도 눈길
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/industry/2026/02/26/20260226500031
+
+17. [서울데이터랩]개장 직후 인기 검색 종목 20選
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500029
+
+18. “비싼 정장 교복 폐지” 정부, ​교복값 거품 걷고 학원비 편법 인상 엄단
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/2026/02/26/20260226500026
+
+19. [서울데이터랩]빅테크 7종목, 꾸준한 상승세 기록
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500022
+
+20. [서울데이터랩]미국 증시 지수 종합
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/securities/2026/02/26/20260226500021
+
+21. 삼성, ‘초격차 기술’로 승부수… 로봇·전장·헬스케어까지 판 키운다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226500018
+
+22. 현대차그룹, ‘아틀라스’ 앞세워 피지컬 AI 상용화 이끈다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226500016
+
+23. 데몬헌터스 ‘골든’에 불고기·김밥…모바일 분야 ‘K혁신’ 강조한 갤럭시S26 언팩
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/industry/2026/02/26/20260226500015
+
+24. KT스퀘어에 내 작품이 뜬다… KT, ‘모두의 캔버스 공모전’ 개최
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226500014
+
+25. SK그룹, ‘딥체인지’ 전략으로 AI·에너지 영토 확장
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226500013
+
+26. 봄옷, 여름까지… ‘시즌리스’ 상품 전면에
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043008
+
+27. 주문도 창업도 한눈에… 홈페이지 리뉴얼
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043007
+
+28. 메디웰, 혈당·영양식 3종… 100% 환불제
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043006
+
+29. 재생 플라스틱 100%… ‘친환경 경영’ 가속
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043005
+
+30. 고구마 프라이 스낵 ‘바삭츄리 고튀’ 인기
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043004
+
+31. ‘카카오 심장’ 양산공장 가동… 생산성 150%↑
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043003
+
+32. 생성형 AI 광고 ‘웅진스마트올 레인저스’
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043002
+
+33. 마이녹셀, ‘탈모·두피 고민’ 맞춤형 샴푸 3종
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226043001
+
+34. 설레는 봄, 할인해 봄
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226042001
+
+35. ‘고객 맞춤형’ 우리은행 제휴카드 5종 출시
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041008
+
+36. 연금 잔고 20조 돌파… 1년새 71% ‘쾌속 성장’
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041007
+
+37. 국내 업계 최초 ‘순이익 2조 클럽’ 입성
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041006
+
+38. ‘마(馬)니아의 전당’ 팝업스토어 오픈
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041005
+
+39. ‘비과세+고수익’ 변액보험, 투심 잡았다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041004
+
+40. S90·XC90 하반기 판매량 최대 95% 폭증
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041003
+
+41. 우리금융 품서 ‘내실 경영’… K-ICS 177%로
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041002
+
+42. “5년 연속 중대재해 제로”… 스마트 안전 강화
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226041001
+
+43. 단체정신·소통 앞세워 ‘백년효성’ 도약
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040006
+
+44. ‘2026년 지속가능한 AI 전환 전략’ 발표
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040005
+
+45. ‘아토베리어365 크림’ 누적 판매 1000만개
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040004
+
+46. 외국인 매출 비중 25%… K백화점 통했다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040003
+
+47. 사업구조 재편·인공지능 활용 ‘투트랙’ 전개
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040002
+
+48. ‘딥체인지’ 전략으로 AI·에너지 영토 확장
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226040001
+
+49. 시민 상상·창의력을 ‘KT스퀘어’에 그린다
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226039006
+
+50. 자사주 2500억 소각… AI 등에 50조 투자
+   신문: 서울신문 | 날짜: 2026-02-26
+   URL: https://www.seoul.co.kr/news/economy/business-news/2026/02/26/20260226039005
+
+
+📍 경기도 (50개)
+----------------------------------------------------------------------
+1. 3세대 AI폰 '갤럭시 S26 시리즈' 공개…내일부터 사전판매
+   신문: 경기일보 | 날짜: 2026-02-26
+   URL: https://www.kyeonggi.com/article/20260226580036
+
+2. 신동빈 297억·정용진 199억…유통가 오너 배당금 150억 '훌쩍'
+   신문: 경기일보 | 날짜: 2026-02-26
+   URL: https://www.kyeonggi.com/article/20260226580023
+
+3. 산업에서 생활로… 경기 서부권 재정자립도의 30년 [경기지역 재정 성적표⑦]
+   신문: 경기일보 | 날짜: 2026-02-26
+   URL: https://www.kyeonggi.com/article/20260225580579
+
+4. 상법개정안, 국회 본회의 통과…법왜곡죄 수정안 놓고 필버 돌입
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580507
+
+5. 김동연, 달달버스 시즌2 재출발… ‘경기도형 공공주택’ 비전 발표
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580477
+
+6. 李대통령, “부동산 묶인 자금, 자본시장 이동은 고무적”
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580467
+
+7. 한국부동산원, 이헌욱 신임 원장 취임…"부동산 ‘브레인 기관’ 도약"
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580443
+
+8. 신협, 제53차 정기 대의원회…첫 ‘지역별 이사’ 선출
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580428
+
+9. MBK·영풍, 고려아연 주총 앞두고 ‘입장 번복’ 논란…무산 안건 재제안에 신뢰 흔들
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580426
+
+10. 삼성전자, 'iF 디자인 어워드 2026' 77개 수상…“지속가능한 디자인”
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580419
+
+11. 포천 고병원성 AI 잇단 발생…기존 방역권 밖 확진에 긴장 고조
+   신문: 경기일보 | 날짜: 2026-02-26
+   URL: https://www.kyeonggi.com/article/20260226580012
+
+12. 인천 해사법원 영종·제물포구·미추홀·연수 등 ‘유치전’ 과열
+   신문: 경기일보 | 날짜: 2026-02-26
+   URL: https://www.kyeonggi.com/article/20260225580356
+
+13. 동탄 아파트 현관에 ‘빨간 래커·인분’ 테러…‘보복 대행’ 여부 수사
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580603
+
+14. [단독] "가만 두지 않겠다"…사적 보복 대행 의심 20대 남성 긴급체포
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580599
+
+15. ‘모텔 연쇄살인’ 피의자 SNS 비공개 전환…팔로워 45배 폭증
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580597
+
+16. '돈봉투' 무죄확정받은 허종식·윤관석 “정치 탄압에 결국 진실 드러나”
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580591
+
+17. 국힘, 회계사·원전 엔지니어 첫 인재 영입…“다음달 11일까지 매주 발표” [6·3 알고리즘]
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580480
+
+18. LH, 3기 신도시 중심 18조원 공사·용역 발주
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580423
+
+19. 경기노사민정協, 현장 맞춤형 '일터혁신 상생 컨설팅' 본격 추진
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580370
+
+20. 경기노동청·안전보건公, 수원·화성 레미콘 제조사와 안전보건 협의체 발족
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580339
+
+21. 한국수입협, 주한 세르비아 대사와 교역 확대 방안 논의
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580335
+
+22. 부동산경제단체연합회장에 김종호 공인중개사협회장 선출
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580314
+
+23. 경기·인천서만 7,600명 뽑는다…올해 지방공무원 채용 전년 대비 60% '껑충'
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580259
+
+24. 농식품부, 전략작물직불금 접수 시작…수급조절용 벼 등 신규 포함
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580185
+
+25. 경기도, ‘양자클러스터’ 공모 참여 …첨단산업 게임 체인저
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580120
+
+26. 경기도 ‘규제샌드박스 지원사업’ 추진…신산업 생태계 조성
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580118
+
+27. 동네 정비 더 쉽고 빠르게…‘소규모 정비사업’ 문턱 낮춘다
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580104
+
+28. 산재근로자 '치료 넘어 일터로'…복귀·재취업까지 1:1 맞춤 지원
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580083
+
+29. 철도硏 창립 30주년 기념식…‘미래 교통 선도 연구기관’
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580060
+
+30. 코스피, 사상 첫 6,000선 돌파…한 달 만에 또 '새 역사'
+   신문: 경기일보 | 날짜: 2026-02-25
+   URL: https://www.kyeonggi.com/article/20260225580025
+
+31. 스마트기기 전시했는데 소상공인 어디에… 텅텅 빈 소상공인시장진흥공단 기술시연회
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580374
+
+32. 과기정통부, 7천600억원 규모 ‘제1호 과학기술혁신펀드’ 출범
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580370
+
+33. 지난해 4분기 신규 주담대 평균 2.1억…3분기 보다 1천421만원 감소
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580344
+
+34. 신협, ‘생계비 통장’ 출시…월 250만원까지 압류 방지
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580333
+
+35. 설 명절 원산지 표시 위반 470곳 적발…배추김치 144건 최다
    신문: 경기일보 | 날짜: 2026-02-24
    URL: https://www.kyeonggi.com/article/20260224580221
+
+36. 20만전자·100만닉스 현실화…코스피 '6천피 시대' 임박
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580182
+
+37. 과학기술자문회의 "스타트업·전략기술 기업, 주52시간제 예외 둬야"
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580122
+
+38. 韓 기업 경기전망 4년 만에 긍정 전환…제조업 '선전'
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580119
+
+39. 철을 넘어 순환으로…김미라 ㈜재원인더스트리 대표의 ‘병행 전략’ [2026년을 빛낼 여성 CEO⑥]
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580116
+
+40. 안양·판교, 국토부 ‘자율차 시범운행지구 서비스 지원사업’ 선정
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580095
+
+41. 셀트리온, 비만치료제 4중 작용 주사제와 경구제 투트랙 개발
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580049
+
+42. 李대통령 “다주택 자유지만 책임도 각자 몫… 정부에 맞서지 말라는 말 있어”
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260224580022
+
+43. 규제에 묶인 경기북부…30년째 ‘뒷걸음질’ 치는 살림살이 [경기지역 재정 성적표⑥]
+   신문: 경기일보 | 날짜: 2026-02-24
+   URL: https://www.kyeonggi.com/article/20260223580574
+
+44. 정비해도 불어난 ‘경기도 기금’…고갈 위기·땜질 운영에 전면 수술대
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580483
+
+45. 동아ST, 지배구조 투명성 제고 주주 환원 정책 강화 [한양경제]
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580467
+
+46. ‘결혼비용 투명화’ 가격표시제 도입 100일…경인지역 업체 참여 ‘저조’
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580451
+
+47. 서울교통공사, 정부 산업용 전기요금제 개편 추진에 우려 [한양경제]
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580436
+
+48. 최대 실적 낸 고려아연 vs 적자 확대 영풍…주총 앞두고 경영 성적표 엇갈려
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580441
+
+49. 경과원, 스타기업 43개사 모집…기업당 최대 8천만원 지원
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580432
+
+50. “20대보다 60대가 더 번다”…대기업·중소기업 소득 격차도 2배
+   신문: 경기일보 | 날짜: 2026-02-23
+   URL: https://www.kyeonggi.com/article/20260223580400
+
+
+📍 강원도 (50개)
+----------------------------------------------------------------------
+1. LS머트리얼즈, 글로벌 ESG 평가 ‘실버’ 등급 획득
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036010
+
+2. ‘육천피’ 시대 이재용 주식재산 40조원 코앞…정몽구·정의선 뒤이어
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036008
+
+3. [속보] 한은, 기준금리 연 2.5%, 6연속 동결…집값 안정화 기조 고려
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036009
+
+4. LG전자, 장초반 8%대 급등…엔비디아 협력 확대 기대 투자심리 자극
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036006
+
+5. 유통 대기업 오너 배당금 최소 150억원…신동빈 297억원·정용진 199억원
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036005
+
+6. 엔비디아 훈풍에 코스피 사상 첫 6190대…코스닥도 상승
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2036004
+
+7. 엔비디아 분기 매출 약 98조원 ‘사상 최대’…연매출도 312조원 돌파
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035992
+
+8. ‘저탄소 전환’ 목표 기후금융 790조원으로 확대…지방·중소기업 집중 투입
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035990
+
+9. 반세기 이어온 기능장…산업현장 지켜온 ‘최고 숙련기술’ 자부심
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035866
+
+10. [부동산 집중조명] 공급 줄고 인구 늘어난 원주…호재 속 남원주 역세권 투자자 관심
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035876
+
+11. 강원농협 경제사업 활성화 추진 결의대회
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035948
+
+12. 강원조달청, 사회적경제기업 공공조달길잡이 상담 지원
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035950
+
+13. 강원혁신센터 ‘로컬창업 기업 육성사업’ 운영기관 선정
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035951
+
+14. 강원 8개 시·군 합계출산율 감소… 지자체별 맞춤형 대응책 필요
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035953
+
+15. 강원 기업심리지수 0.7p 하락… 체감경기 부진 지속
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035955
+
+16. 올해 강원도 지방공무원 1445명 신규채용 나선다
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035957
+
+17. 증시 상승 랠리에 강원 상장사 시총 ‘껑충’
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035976
+
+18. 다시 커진 아기울음 10년 만의 출생 반등
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035986
+
+19. K- 증시 또 새역사, 코스피 ‘꿈의 6000’ 깃발 꽂았다
+   신문: 강원도민일보 | 날짜: 2026-02-26
+   URL: https://www.kado.net/news/articleView.html?idxno=2035987
+
+20. 재외동포 경제인 최대 행사 ‘세계한상대회’ 사상 첫 민간운영위원장 선출
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035872
+
+21. 경제계, 3차 상법개정안 통과에 “결정 존중…추가 규제개선에 속도를”
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035865
+
+22. [속보] 줄줄 새는 국고보조금…지난해 부정수급 992건 ‘역대 최다’
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035862
+
+23. 유바이오로직스, 대상포진 백신 1상 중간성과…연내 2상 진입
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035860
+
+24. [속보] 코스피 6083.86으로 마감…5000선 돌파 한달여 만에 ‘육천피’ 시대
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035798
+
+25. 상조업체 피해 보상금 1만6000명 미지급…감사원 “공정위 감독 미흡”
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035780
+
+26. 강원농협 “새로운 대한민국 농협 구현 위한 결의” 다짐
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035777
+
+27. 강원농협 경제사업장 부정사고 근절 위한 교육 추진
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035775
+
+28. 출생아 18개월 연속 증가…지난해 4분기 30대 후반 출산율 역대 최고
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035764
+
+29. 현대차·기아·BMW 10만7000여대 리콜…전기차·520i 등 37개 차종 결함
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035757
+
+30. 설 선물 팔아 내 취향 산다…2030 ‘재투자 소비’ 확산
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035753
+
+31. 신협중앙회, 지역별 이사 15명 첫 선출…강원지역은 이도식 원주밝음신협 이사장
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035744
+
+32. 환율 1.7원 내린 1440.8원…이란 핵 협상 기대 영향
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035741
+
+33. [속보] 코스피, 사상 첫 6000선 돌파…개장과 동시에 ‘6천피’
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035738
+
+34. 총수일가 ‘여성 경영’, 자녀세대서 더 늘어…81개 대기업 37% 수준
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035736
+
+35. 춘천동부새마을금고 정기대의원 총회
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035701
+
+36. 강원중기청, 중소기업 글로벌 판로 확대 교육 추진
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035703
+
+37. 더존비즈온 매각 여파 혁신파크 종합점검 촉구
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035709
+
+38. 아파트 거래 12년만에 최저…주담대 부담 확대
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035718
+
+39. 강원도관광협회 이사회·대의원 총회
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035723
+
+40. 노인고용률 화천 76% vs 원주 40% 도·농 고용불균형
+   신문: 강원도민일보 | 날짜: 2026-02-25
+   URL: https://www.kado.net/news/articleView.html?idxno=2035727
+
+41. 강원권 건설공사 발주 공공기간 중대재해 감축 위한 간담회 개최
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035599
+
+42. “너무 비싸” 이 대통령 지적 통했나…다이소 ‘100원 생리대’ 출시
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035554
+
+43. [속보] 코스피, ‘널뛰기 장세’ 끝 또 최고가 경신…‘6000피’ 코앞
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035548
+
+44. “더존비즈온 매각 변수… 1조원대 기업혁신파크 조성사업 종합점검해야”
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035539
+
+45. 카카오 광고 메시지에 이용자 59% “불편”…일괄 수신거부 기능 요구 70%
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035519
+
+46. 3차 상법 개정 앞두고 자사주 ‘막판 처분’ 급증…12월 공시 164건 몰려
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035508
+
+47. ‘백만닉스’ 달성…SK하이닉스, 장중 사상 첫 100만원선 돌파
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035496
+
+48. 금값 뛰니 ‘이것’ 수요도 뛴다
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035472
+
+49. 코스피, 0.24% 상승 출발 후 장 초반 오름폭 키워
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035473
+
+50. D램 49.5% 급등…1월 생산자물가 5개월 연속 상승
+   신문: 강원도민일보 | 날짜: 2026-02-24
+   URL: https://www.kado.net/news/articleView.html?idxno=2035467
+
+
+📍 충청도 (50개)
+----------------------------------------------------------------------
+1. 대전도시공사, 한국지방공기업학회 동계학술대회 최우수상 수상 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402374
+
+2. 한의학연, 전통 약용식물 ‘우슬’의 안구건조증 개선 효과 규명 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402364
+
+3. ETRI, MWC서 6G 핵심 원천 기술 공개 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402361
+
+4. KAIST, 롯데그룹 신동빈 회장에 명예박사 학위 수여 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402351
+
+5. KAIST, AI로 수소차 연료전지 난제 해결 실마리 제시 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402346
+
+6. 애터미, ‘대한민국에서 가장 일하기 좋은 기업’ 종합 2위 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402340
+
+7. 충남신보, 신복위 대전·충청지역본부와 '금융복지 활성화' 업무협약 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402302
+
+8. 대전 사회적경제 새 거점, ‘대전사랑우수상품관’ 개장식 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402301
+
+9. 생명연, 2026 AI 디지털바이오 심포지엄 개최 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402294
+
+10. 국가철도, 신입직원 실무 전문가 양성 프로그램 가동 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402296
+
+11. 국립산림치유원-경상북도환경연수원, 산림치유-환경교육 협력 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402293
+
+12. 충남신용보증재단, '2025 보전채권 회수실적 평가' 종합 1위 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402292
+
+13. 대전 탄동농협, 조합원 운영의 공개 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402290
+
+14. 농협 충남세종본부, 영농철 대비 농기계 순회수리 봉사 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402279
+
+15. ‘제51회 한국조폐공사 사장배 크로스컨트리 대회’ 개최 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402269
+
+16. 엘디티, 골프장 카트충전소에도 화재 초기 감지 시설 설치 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402262
+
+17. 대전신세계, 아카데미서 봄학기 다양한 재태크 강좌 운영 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402253
+
+18. 한국연구재단, 스핀궤도토크 소재 기술 소개 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402227
+
+19. 생명연, 온실가스 감축 전략 제시 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402234
+
+20. KAIST, 2026학년도 입학식 개최 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402214
+
+21. 폴리텍IV대학와 협력...‘세종국제기술교육센터’ 3월 교육 본격 가동 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402222
+
+22. 코스피 '6000피 시대' 열렸다 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402212
+
+23. 서부발전, ‘에너지 전환 1호’ 구미천연가스발전소 상업운전 개시 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402207
+
+24. KBSI, 치매 등 난치성 질환 원인 밝힐 ‘정밀 검사기’ 개발 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402200
+
+25. 대전관광공사, ‘대전·세종 인트라바운드 관광 콘텐츠’ 공개 모집 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402197
+
+26. 국가철도공단, 민·관 기술 협력으로 ‘철도형 재생에너지’ 확대 추진 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402157
+
+27. 대전일자리경제진흥원-대전지방조달청, 중소기업의 성장지원 및 혁신조달 촉진 ‘맞손’ - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402153
+
+28. 대전상의, 정기의원총회 개최 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402147
+
+29. 지질연, 능동적 핵심광물 공급망 구축 전략 찾는다 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402145
+
+30. KNF, '美 LACP 비전 어워즈'서 지속가능경영보고서 금상 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402134
+
+31. IBS, 도파민 관련 질환 치료 연구 방향 제시 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402127
+
+32. 화학연, 우즈벡 현지 인력 초청 연수 실시 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402126
+
+33. 모바휠, 스페인 말라가 트랜스피어 딥테크 포럼 '대전시 경제사절단 참가' - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402113
+
+34. ETRI, 클린룸 없는 대면적 전자피부 공정기술 개발 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402090
+
+35. 국가철도 강원본부, 중앙선 영주역 안전연결통로 개통 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402091
+
+36. KAIST, 리튬금속 배터리 상용화 난제 풀었다 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402086
+
+37. 서부발전, 경영혁신 프로젝트 슬로건 ‘서부家 그린대로’ 선포 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402084
+
+38. 농어촌公 세종대전금산지사, 안전보건협의체 정기회의 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402072
+
+39. 세종일자리경제진흥원, 신중년 사회공헌 활동지원 사업 '박차' - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402070
+
+40. 골프존, 스크린골프대회 ‘GTOUR’ 글로벌 투어로 도약 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402069
+
+41. ‘2026 대전․세종 디지털 전환 지원사업’ 참여기업 모집 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402054
+
+42. 한국중부발전, 보령 지역사회와 ‘상생의 가치’ - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402028
+
+43. 세종시 기업지원사업 통합설명회, 26일 개최 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402010
+
+44. 충남신용보증재단, 특별 채무조정제도 시행 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=402007
+
+45. aT 홍문표 사장,온라인도매시장 바우처지원사업 설명회 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401996
+
+46. 영인산자연휴양림, 지역 이웃 위한 ‘사랑의 땔감 나누기’ - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401992
+
+47. 2026년 기계산업 전망은?...기계연, 기계기술정책 발간 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401969
+
+48. 한국연구재단, 난치성 빈혈 치료 연구 성과 공개 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401932
+
+49. 산림복지진흥원, 산림복지서비스이용권 82,500명 선정 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401952
+
+50. 한국타이어 후원 미국 투모로우 골프 리그(TGL) 시즌 2, 9∙10∙11∙12 경기 시동 - 충청뉴스
+   신문: 충청뉴스 | 날짜: 2026-02-26
+   URL: http://www.ccnnews.co.kr/news/articleView.html?idxno=401950
+
+
+📍 경상도 (50개)
+----------------------------------------------------------------------
+1. 기장군, 미래 100년 먹거리 동남권 산단 준공식 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=404008
+
+2. 거제시, 2026년 거제시 로컬크리에이터 육성 사업 협약 체결 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403983
+
+3. 경남도, 관광기업에 1대1 무료 컨설팅 지원... 인공지능 마케팅까지 강화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403979
+
+4. 경남바이오 도약 첫걸음...동부경남 상생토크 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403977
+
+5. 경남도, 드론쇼코리아(DSK) 2026 17개사 참여 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403976
+
+6. 경남도, K-조선 AI자율제조 시대 연다 250억 원 규모 AX기반구축사업 공모 박차 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403971
+
+7. 상주시 농업‧농촌 및 식품산업 정책심의회 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-26
+   URL: http://m.ynews.kr/view.php?idx=403955
+
+8. 상주시, 2026년 신선농산물 수출검역요건 교육 실시! - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-26
+   URL: http://m.ynews.kr/view.php?idx=403954
+
+9. 봉화군, 임대형 스마트팜 입주 농업인 맞춤형 현장 컨설팅 지원 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-26
+   URL: http://m.ynews.kr/view.php?idx=403950
+
+10. 경북 산업지도, 김천에서 다시 그리다 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-26
+   URL: http://m.ynews.kr/view.php?idx=403947
+
+11. 경북도, `햇빛소득마을`로 농가 소득·에너지 자립 기반 마련 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-26
+   URL: http://m.ynews.kr/view.php?idx=403946
+
+12. 대구 제2국가산단 조성 통합협의체 출범… 적기 조성 본격 추진 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403944
+
+13. 울산시 “인공지능부터 트램까지”남구‘미래 청사진’ 공개 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403932
+
+14. 밀양물산(주), 청년농업인 4-H연합회와 유통 활성화 업무협약 체결 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403915
+
+15. 창원특례시, 2027년도 농림축산식품사업 500억 원 규모 예산 신청 확정 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403901
+
+16. 함안군, 통합돌봄 퇴원환자 지역사회 연계사업 업무협약 체결 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403877
+
+17. 경북농업의 판을 바꾼다...인공지능 대전환(AX) 원년 선포 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403859
+
+18. 포항시, 2027 국비 확보 전략 논의…이상휘 의원과 지역 현안 협력 강화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403853
+
+19. 포항시, ‘북부권 버스 공영차고 액화수소충전소’신축공사 본격 착수 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403852
+
+20. 대구신보, 중구 소상공인 대상 30억원 규모 경영안정자금 특례보증 지원 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403837
+
+21. [기획보도]함양 AI 데이터센터 설립 투자 본격화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403807
+
+22. 경남도, 콘텐츠기업 성장 사다리 강화... 실질적 성과창출 돕는다 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403796
+
+23. 경남도, 농가 부담 10%만... 재해보험 1,055억 원 투입·68개 품목 확대 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403790
+
+24. 경남도, 내수중소기업 수출전환 지원... 해외시장 진출 돕는다 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403786
+
+25. 2026년 산림소득증대사업 대상자 교육 실시 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403754
+
+26. 울산경제자유구역청 ‘3디프린팅 벤처집적 지식산업센터 입주기업 간담회’ 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403709
+
+27. 부산시 `2026년 수산인 리더 소통 교류의 장`, 오늘(25일) 열린다! - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403694
+
+28. 부산시, 부산우수제품 쇼핑숍 `동백상회` 입점 기업 모집 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403691
+
+29. 부산시, `알리바바닷컴` 입점 지원 확대… 실 수출 기업 증가·최대 성과 달성 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403688
+
+30. 사천시, 2026년 전략작물 직불금 신청‧접수 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403640
+
+31. 대구시, 재생에너지 보급 487MW 달성… 특·광역시 중 1위 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-25
+   URL: http://m.ynews.kr/view.php?idx=403580
+
+32. “북극항로는 기회이자 도전... 부울경 기능분담으로 대응”... 경남도, 북극항로 대응 4대 전략 제시 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403555
+
+33. 경남도, ‘중대재해 예방 사각지대 해소 지원사업’ 접수 시작 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403550
+
+34. 경남도, 연안어선 감척사업 집중 추진 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403549
+
+35. 경남도, 2026년 임업직불금 권역별 순회 교육 실시 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403548
+
+36. 경남도, 민생경제 총력... “현장이 체감할 때까지” - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403539
+
+37. 경남도, ‘하루 더 머무는 경남’ JUMP! 남부권 관광 본격화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403537
+
+38. 포항시, 이차전지 기업협의회 신년교류회 개최…산학연관 한자리에 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403524
+
+39. 부산 도시브랜드, 굿즈를 통해 일상 속으로 확산 도시브랜드와 함께 성장할 ‘파트너스’ 기업 모집 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403498
+
+40. 고성군, 550억 원 규모 투자유치, 미래 전략산업 선점 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403463
+
+41. 포항시, ‘2026 연구소·첨단기술기업 네트워킹 데이’ 성황리 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403443
+
+42. 대구교통공사, 정보공개 종합평가 99.8점 ‘최우수’… 행안부 장관 표창 수상 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403420
+
+43. 대구시, ‘CES 2026’에서 제조혁신·미래차 전환 해법 찾는다 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403419
+
+44. “산업수도 울산에서 인공지능 수도 울산으로” 울산시,‘울산형 인공지능(AI) 이상(비전)’발표 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403414
+
+45. 구미시, 맞춤형 일자리사업 본격 가동…도비 2억 1천만원 확보 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403358
+
+46. 구미시, 노후경유차 610대 조기폐차 지원…대기질 개선 본격화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403357
+
+47. 경주시–동국대학교 WISE캠퍼스, 미래차 인재양성 손잡았다 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403356
+
+48. 울산시농업기술센터 2026년 농업기계 안전교육 본격 추진 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403288
+
+49. 울산시 미래 항공이동수단(모빌리티) 산업 전략 구체화 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403279
+
+50. 부산시, 일자리와 건강을 동시에 챙긴다… `노쇠! 부산이 책임질게 건강UP` 하하건강파트너 발대식 개최 - 경상도뉴스
+   신문: 경상뉴스 | 날짜: 2026-02-24
+   URL: http://m.ynews.kr/view.php?idx=403269
+
+
+📍 전라도 (50개)
+----------------------------------------------------------------------
+1. 광양경자청, 설 맞아 복지시설 11곳 위문… 20년 이어온 ‘나눔 행정’
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=302687
+
+2. 여수광양항, 설 연휴에도 ‘24시간 멈춤 없는 항만’ 운영
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=302675
+
+3. 전남테크노파크, 2026 기업지원 로드맵 한눈에 제시
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=301599
+
+4. 여수광양항만공사, 폴드컨테이너 전략 특강 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=300752
+
+5. 광양만권경제자유구역청, 2026년 투자유치 목표 제시
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=220567
+
+6. 전남테크노파크, 해남군 연고산업 육성사업 ‘최고등급’ 선정
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=220482
+
+7. 여수광양항만공사, 2026년 시무식 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219606
+
+8. 광양경자청, 2025년 투자유치 4조9천억 원 달성…개청 이래 최대
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219286
+
+9. 순천상의, 관내 제조업체 체감경기 '신중한 국면' 전망
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219209
+
+10. 광양만권경제자유구역청, 주한중국상공회의소와 서울서 투자상담회 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219139
+
+11. 여수광양항만공사, 2025년 임금·단체협약 체결… 15년 연속 무분규 달성
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219024
+
+12. 여수광양항만공사, 우수 선사 초청 감사설명회 열어
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=219003
+
+13. 여수광양항만공사, 혹한기 대비 ‘한랭질환 예방 캠페인’ 실시
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218891
+
+14. 전남테크노파크, 광양만권 이차전지 특화단지 유치 ‘총력’
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218890
+
+15. 여수광양항만공사, 전남권 AI 데이터센터 유치 전략 논의
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218340
+
+16. 여수광양항만공사, 네이버클라우드와 스마트 항만 전환 협력
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218067
+
+17. 전남테크노파크 지원 속 대한철강, ‘모범 성장 모델’ 주목
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218066
+
+18. 광양경자청, 전 직원 역량 강화 워크숍 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=218060
+
+19. 여수광양항만공사, ‘제1회 KEMI ESG Awards 2025’ 공공부문 최우수상 수상
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217889
+
+20. 광양경자청, ‘2025 전남 중소기업-VC 투자유치마트’ 개최… 지역 기업 성장 발판 마련
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217556
+
+21. 전남테크노파크, ‘The Bridge 전남 2025’ 성료
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217195
+
+22. 광양경자청, 2025년 제2회 홍보정책자문위원회 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217194
+
+23. 여수광양항만공사, ‘AI 안전장비 공유 플랫폼’ 가동
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217190
+
+24. 여수광양항만공사·해양환경공단·순천대, 해양환경 개선 위한 협력체계 구축
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217071
+
+25. 여수광양항만공사, 항만배후단지 안전관리 강화… 유관기관 협의체 확대
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=217059
+
+26. 광양만권경제자유구역청, 2025년도 제3회 추경예산 1,168억 원 확정
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=216691
+
+27. 광양경자청, 2025 신산업 전략 간담회 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=215606
+
+28. 광양경제자유구역청, 투자유치 역량 강화 교육 실시
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=215305
+
+29. 광양만권경제자유구역 조합회의, 행정사무감사 실시
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=214066
+
+30. "전남테크노파크 해외시장 창출단”  베트남서 글로벌 시장 개척 본격화
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=212525
+
+31. 여수광양항만공사, 추석 연휴 24시간 항만운영 특별대책 마련
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211801
+
+32. 전남테크노파크, 뿌리산업 선도기업 성과확산 워크숍 성료
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211743
+
+33. 코스트코, 순천 선월하이파크 입점…광양만권 경제 중심지 도약 가속
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211661
+
+34. 순천 기업 10곳 중 8곳, 추석 연휴 7일 이상 쉰다
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211387
+
+35. 광양경자청, 투자유치 PM 보고회 개최…70여 타깃기업 집중 관리
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211384
+
+36. 전남테크노파크, 동부권 일자리 박람회 성황…2,000여명 참여
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=211138
+
+37. 고용노동부 여수지청, 고용위기 선제대응 지원 설명회 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210963
+
+38. 여수광양항만공사, 공공부문 인적자원개발 최우수기관 선정
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210855
+
+39. 광주·전남 기업, 김대중컨벤션센터서 수출 1,868만 달러 성과
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210538
+
+40. 순천대, 광주·전남기업 수출페스티벌서 1,868만 달러 성과
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210526
+
+41. 전남테크노파크, DX멘토단 여수서 역량 강화...간담회 열어
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210412
+
+42. YGPA, 이해충돌방지법 토론 프로그램 성황리 종료
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210254
+
+43. 광양경자청, 중국 창춘과 산업협력 MOU 체결
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=210250
+
+44. 광양경자청, 중국 위생용품기업과 증설 투자협약 체결
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=209727
+
+45. 순천시, ‘2025 청년 소상공인 페스티벌’ 개최
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=209687
+
+46. 광양만권경제자유구역청, 중국 광저우서 투자유치 성과
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=209624
+
+47. YGPA, 여수·광양항 입주기업 공장장과 간담회
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=209611
+
+48. 광양경자청, 중국지역 투자유치 활동 전개
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=209496
+
+49. 중국 ESS기업 TWS, 광양만권 투자 검토…현장 시찰 진행
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=208559
+
+50. 안도의 한숨 내쉰 여천NCC, 체질 개선 나서나?
+   신문: 전남일보 | 날짜: 2026-02-25
+   URL: https://www.jldnews.co.kr/news/articleView.html?idxno=207650
 

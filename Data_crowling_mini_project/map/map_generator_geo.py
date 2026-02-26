@@ -416,10 +416,11 @@ class NewsMapGeneratorGeo:
                 'Incheon': '경기도', 'Daejeon': '충청도', 'Daegu': '경상도',
                 'Busan': '경상도', 'Ulsan': '경상도', 'Gwangju': '전라도'
             }};
-            
+
             function resetPanel() {{
                 var panel = document.getElementById('info-panel');
                 panel.innerHTML = '<h3>📍 지역을 선택하세요</h3><p style="color: #999; font-size: 12px;">지도에서 지역에 마우스를 올리면 정보가 표시됩니다.</p>';
+                panel.style.display = '';
             }}
 
             setTimeout(function() {{
@@ -430,31 +431,53 @@ class NewsMapGeneratorGeo:
                         break;
                     }}
                 }}
-                
+
                 if (mapInstance) {{
-                    // 빈 공간 클릭 시 초기화
+                    // 빈 공간 클릭 시 info-panel 다시 보이게
                     mapInstance.on('click', function(e) {{
-                        resetPanel();
+                        var panel = document.getElementById('info-panel');
+                        if (panel) {{
+                            panel.style.display = 'block';
+                            resetPanel();
+                        }}
                     }});
 
                     mapInstance.eachLayer(function(layer) {{
                         if (layer.feature && layer.feature.properties && layer.feature.properties.NAME_1) {{
                             var geoJsonName = layer.feature.properties.NAME_1;
-                            
+
                             layer.on('mouseover', function(e) {{
                                 var dbRegion = regionMapping[geoJsonName];
-                                if (dbRegion && regionNewsData[dbRegion]) {{
+                                var panel = document.getElementById('info-panel');
+                                if (panel) {{
+                                    panel.style.display = 'block';
                                     showRegionInfo(dbRegion, regionNewsData[dbRegion]);
+                                    console.log('info-panel show (mouseover):', dbRegion);
                                 }}
                             }});
 
-                            // 마우스가 레이어를 벗어날 때 초기화하고 싶다면 주석 해제
-                            // layer.on('mouseout', function(e) {{ resetPanel(); }});
+                            // 클릭 시 info-panel 숨기기
+                            layer.on('click', function(e) {{
+                                var panel = document.getElementById('info-panel');
+                                if (panel) {{
+                                    panel.style.display = 'none';
+                                    console.log('info-panel hide (region click)');
+                                }}
+                            }});
+
+                            // 마우스가 레이어를 벗어날 때 info-panel 다시 보이게 (선택)
+                            layer.on('mouseout', function(e) {{
+                                var panel = document.getElementById('info-panel');
+                                if (panel) {{
+                                    panel.style.display = 'none';
+                                    console.log('info-panel hide (mouseout)');
+                                }}
+                            }});
                         }}
                     }});
                 }}
             }}, 2000);
-            
+
             function showRegionInfo(regionName, newsItems) {{
                 var panel = document.getElementById('info-panel');
                 var html = '<h3>📍 ' + regionName + ' 주요 뉴스 & 키워드</h3>';
