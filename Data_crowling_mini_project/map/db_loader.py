@@ -9,143 +9,103 @@ from typing import List, Dict, Optional
 
 
 class NewsDBLoader:
-    """뉴스 데이터베이스 로더"""
+    """뉴스 데이터베이스 로더 (news.db & news_scraped.db 통합)"""
     
     def __init__(self, db_path: str = None):
         """
         Args:
-            db_path: 데이터베이스 경로 (기본값: ../data/news.db)
+            db_path: 기본 데이터베이스 경로 (제공되지 않으면 기본 위치 사용)
         """
-        if db_path is None:
-            # map 폴더 기준 상위 폴더의 data/news.db
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            db_path = os.path.join(os.path.dirname(current_dir), 'data', 'news.db')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(current_dir))
         
-        self.db_path = db_path
+        # 통합할 DB 경로 리스트
+        self.db_paths = [
+            os.path.join(project_root, 'data', 'news.db'),
+            os.path.join(project_root, 'data', 'news_scraped.db')
+        ]
         
-        if not os.path.exists(self.db_path):
-            raise FileNotFoundError(f"데이터베이스 파일을 찾을 수 없습니다: {self.db_path}")
-    
+        # 유효한 DB 경로만 필터링
+        self.db_paths = [p for p in self.db_paths if os.path.exists(p)]
+        
+        if not self.db_paths:
+            raise FileNotFoundError("데이터베이스 파일을 찾을 수 없습니다.")
+
+    def _get_combined_query(self, query: str, params: tuple = ()) -> List[Dict]:
+        """여러 DB에서 쿼리 실행 후 URL 기준으로 중복 제거"""
+        all_data = []
+        for path in self.db_paths:
+            try:
+                conn = sqlite3.connect(path)
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                cursor.execute(query, params)
+                all_data.extend([dict(row) for row in cursor.fetchall()])
+                conn.close()
+            except Exception:
+                continue
+        
+        # URL 기준 중복 제거 (최신 데이터 우선 유지)
+        unique_news = {}
+        for item in all_data:
+            url = item.get('url')
+            if url not in unique_news:
+                unique_news[url] = item
+            else:
+                # published_time이 더 최신인 것을 유지 (문자열 비교)
+                if str(item.get('published_time', '')) > str(unique_news[url].get('published_time', '')):
+                    unique_news[url] = item
+        
+        return list(unique_news.values())
+
     def get_all_news(self) -> List[Dict]:
-        """
-        모든 뉴스 가져오기
-        
-        Returns:
-            뉴스 딕셔너리 리스트
-        """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute('''
+        query = '''
             SELECT id, title, content, region, sentiment_score, 
                    published_time, url, keyword, collected_at
             FROM news
             ORDER BY published_time DESC
-        ''')
-        
-        news_list = [dict(row) for row in cursor.fetchall()]
-        conn.close()
-        
-        return news_list
+        '''
+        return self._get_combined_query(query)
     
     def get_news_by_region(self, region: str) -> List[Dict]:
-        """
-        특정 지역 뉴스 가져오기
-        
-        Args:
-            region: 지역명 (서울, 경기도, 강원도, 충청도, 경상도, 전라도)
-        
-        Returns:
-            뉴스 딕셔너리 리스트
-        """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute('''
+        query = '''
             SELECT id, title, content, region, sentiment_score, 
                    published_time, url, keyword, collected_at
             FROM news
-            WHERE region = ?
+            WHERE region LIKE ?
             ORDER BY published_time DESC
-        ''', (region,))
-        
-        news_list = [dict(row) for row in cursor.fetchall()]
-        conn.close()
-        
-        return news_list
+        '''
+        # region이 포함된 경우 검색 (%서울%)
+        return self._get_combined_query(query, (f'%{region}%',))
     
     def get_region_stats(self) -> Dict[str, Dict]:
-        """
-        지역별 통계 가져오기
+        all_news = self.get_all_news()
+        import pandas as pd
+        df = pd.DataFrame(all_news)
         
-        Returns:
-            {
-                '서울': {
-                    'count': 10,
-                    'avg_sentiment': 0.5,
-                    'positive_count': 6,
-                    'negative_count': 4
-                },
-                ...
-            }
-        """
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        if df.empty: return {}
         
-        cursor.execute('''
-            SELECT 
-                region,
-                COUNT(*) as count,
-                AVG(sentiment_score) as avg_sentiment,
-                SUM(CASE WHEN sentiment_score > 0 THEN 1 ELSE 0 END) as positive_count,
-                SUM(CASE WHEN sentiment_score < 0 THEN 1 ELSE 0 END) as negative_count
-            FROM news
-            GROUP BY region
-        ''')
+        # region이 None인 경우 제외
+        df = df[df['region'].notnull()]
         
         stats = {}
-        for row in cursor.fetchall():
-            region, count, avg_sentiment, positive, negative = row
-            stats[region] = {
-                'count': count,
-                'avg_sentiment': avg_sentiment or 0.0,
-                'positive_count': positive or 0,
-                'negative_count': negative or 0
-            }
-        
-        conn.close()
+        # 주요 지역별로 집계 (단순 GroupBy 대신 지역명 포함 여부로 체크)
+        regions = ['서울', '경기도', '강원도', '충청도', '경상도', '전라도', '부산']
+        for r in regions:
+            r_df = df[df['region'].str.contains(r, na=False)]
+            if not r_df.empty:
+                stats[r] = {
+                    'count': len(r_df),
+                    'avg_sentiment': r_df['sentiment_score'].mean() or 0.0,
+                    'positive_count': len(r_df[r_df['sentiment_score'] > 0.5]),
+                    'negative_count': len(r_df[r_df['sentiment_score'] < 0.5])
+                }
         return stats
     
     def get_latest_news_by_region(self, region: str, limit: int = 5) -> List[Dict]:
-        """
-        지역별 최신 뉴스 N개 가져오기
-        
-        Args:
-            region: 지역명
-            limit: 가져올 개수
-        
-        Returns:
-            뉴스 딕셔너리 리스트
-        """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT id, title, content, region, sentiment_score, 
-                   published_time, url, keyword, collected_at
-            FROM news
-            WHERE region = ?
-            ORDER BY published_time DESC
-            LIMIT ?
-        ''', (region, limit))
-        
-        news_list = [dict(row) for row in cursor.fetchall()]
-        conn.close()
-        
-        return news_list
+        news = self.get_news_by_region(region)
+        # 이미 정렬되어 있으므로 limit만 적용
+        return news[:limit]
 
     def get_keywords_by_regions(self, regions: List[str]) -> List[str]:
         """

@@ -9,6 +9,26 @@ import folium
 from folium import IFrame
 import html
 from datetime import datetime, timedelta
+import sys
+import os
+
+# 외부 맵 모듈 경로 추가
+map_module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Data_crowling_mini_project', 'map'))
+if map_module_path not in sys.path:
+    sys.path.append(map_module_path)
+
+# 외부 모듈 임포트 시도
+try:
+    from region_coords import REGION_COORDS, KOREA_CENTER, DEFAULT_ZOOM
+    from color_mapper import (
+        get_sentiment_color as ext_get_sentiment_color,
+        get_sentiment_label as ext_get_sentiment_label,
+        get_sentiment_icon,
+        get_region_color_by_avg
+    )
+    MAP_MODULE_AVAILABLE = True
+except ImportError:
+    MAP_MODULE_AVAILABLE = False
 
 # FinanceDataReader 임포트
 try:
@@ -17,58 +37,114 @@ except ImportError:
     fdr = None
 
 # ==========================================
-# 0. 데이터 연동 및 색상 매핑 유틸리티 (New Map Logic 연동)
+# 0. 외부 모듈 시각화 로직 이식 (Data_crowling_mini_project/map 기준)
 # ==========================================
-def get_db_conn(db_name):
-    return sqlite3.connect(f'data/{db_name}')
 
-def get_sentiment_color(score):
-    """color_mapper.py 로직 연동"""
-    if score is None or score == 0: return 'gray'
-    elif score > 0.5: return 'blue'
-    elif score > 0: return 'lightgreen'
-    elif score < -0.5: return 'red'
+def get_sentiment_color(sentiment_score: float) -> str:
+    """color_mapper.py 원본 로직"""
+    if sentiment_score is None or sentiment_score == 0: return 'gray'
+    elif sentiment_score > 0.5: return 'blue'
+    elif sentiment_score > 0: return 'lightgreen'
+    elif sentiment_score < -0.5: return 'red'
     else: return 'lightred'
 
-def get_sentiment_label(score):
-    """color_mapper.py 로직 연동"""
-    if score is None: return '분석 안 됨'
-    elif score == 0: return '중립'
-    elif score > 0.5: return '매우 긍정적'
-    elif score > 0.2: return '긍정적'
-    elif score > 0: return '약간 긍정적'
-    elif score < -0.5: return '매우 부정적'
-    elif score < -0.2: return '부정적'
-    else: return '약간 부정적'
+def get_sentiment_icon(sentiment_score: float) -> str:
+    """color_mapper.py 원본 로직"""
+    if sentiment_score is None or sentiment_score == 0: return 'info-sign'
+    elif sentiment_score > 0: return 'arrow-up'
+    else: return 'arrow-down'
+
+def get_region_color_by_avg(avg_sentiment: float) -> str:
+    """color_mapper.py 원본 로직"""
+    if avg_sentiment is None or avg_sentiment == 0: return '#FFFFFF'
+    elif avg_sentiment > 0.3: return '#0066CC'
+    elif avg_sentiment > 0: return '#81C784'
+    elif avg_sentiment < -0.3: return '#CC0000'
+    else: return '#FF6666'
+
+def get_sentiment_label(sentiment_score: float) -> str:
+    """color_mapper.py 원본 로직"""
+    if sentiment_score is None: return '분석 안 됨'
+    elif sentiment_score == 0: return '중립'
+    elif sentiment_score > 0.5: return '매우 긍정적'
+    elif score := sentiment_score:
+        if score > 0.2: return '긍정적'
+        elif score > 0: return '약간 긍정적'
+        elif score < -0.5: return '매우 부정적'
+        elif score < -0.2: return '부정적'
+    return '약간 부정적'
 
 def create_popup_html(news_list, region):
-    """map_generator.py의 정교한 팝업 HTML 연동"""
+    """map_generator.py 원본 _create_popup_html 로직"""
     if not news_list: return f"<h4>{region}</h4><p>뉴스가 없습니다.</p>"
     
     html_content = f"""
-    <div style="width: 350px; max-height: 400px; overflow-y: auto; font-family: 'Malgun Gothic', sans-serif;">
-        <h4 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">
+    <div style="width: 400px; max-height: 500px; overflow-y: auto; font-family: Arial, sans-serif;">
+        <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">
             📍 {region} ({len(news_list)}개 뉴스)
-        </h4>
+        </h3>
     """
     for i, news in enumerate(news_list[:10]):
-        title = html.escape(news.get('title', '제목 없음')[:60])
+        title = html.escape(news.get('title', '제목 없음')[:80])
+        url = news.get('url', '#')
+        keyword = news.get('keyword', '키워드 없음')
         sentiment = news.get('sentiment_score', 0) or 0
-        s_label = get_sentiment_label(sentiment)
-        s_color = 'blue' if sentiment > 0 else 'red' if sentiment < 0 else 'gray'
+        sentiment_label = get_sentiment_label(sentiment)
+        sentiment_color = 'blue' if sentiment > 0 else 'red' if sentiment < 0 else 'gray'
+        published_time = news.get('published_time', '날짜 없음')
         
         html_content += f"""
-        <div style="margin: 8px 0; padding: 8px; background: #f9f9f9; border-left: 4px solid {s_color}; border-radius: 4px;">
-            <div style="font-weight: bold; font-size: 13px; color: #333;">{i+1}. {title}</div>
-            <div style="font-size: 11px; color: #666; margin-top: 4px;">
-                <span style="background: #e3f2fd; padding: 1px 4px; border-radius: 3px;">🏷️ {news.get('keyword', '-')}</span>
-                <span style="background: #eee; padding: 1px 4px; border-radius: 3px;">{s_label} ({sentiment:.2f})</span>
+        <div style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-left: 4px solid {sentiment_color}; border-radius: 4px;">
+            <div style="margin-bottom: 5px;">
+                <strong style="color: #333; font-size: 14px;">{i+1}. {title}</strong>
             </div>
-            <div style="margin-top: 4px;"><a href="{news.get('url', '#')}" target="_blank" style="color: #1976d2; font-size: 11px; text-decoration: none;">🔗 기사 보기</a></div>
+            <div style="font-size: 11px; color: #666; margin: 5px 0;">
+                <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">🏷️ {keyword}</span>
+                <span style="background: #{'e8f5e9' if sentiment > 0 else 'ffebee' if sentiment < 0 else 'f5f5f5'}; padding: 2px 6px; border-radius: 3px;">
+                    {sentiment_label} ({sentiment:.2f})
+                </span>
+            </div>
+            <div style="font-size: 11px; color: #999; margin: 5px 0;">📅 {published_time}</div>
+            <div style="margin-top: 5px;"><a href="{url}" target="_blank" style="color: #1976d2; text-decoration: none; font-size: 11px;">🔗 기사 보기</a></div>
         </div>
         """
+    if len(news_list) > 10:
+        html_content += f'<div style="margin: 10px 0; padding: 10px; background: #fff3e0; border-radius: 4px; text-align: center; font-size: 12px; color: #666;">+ {len(news_list) - 10}개 더 있음</div>'
     html_content += "</div>"
     return html_content
+
+# ==========================================
+# 0-1. 데이터베이스 연결 및 통합 로직
+# ==========================================
+def get_db_conn(db_name):
+    """DB 연결 (data 폴더 내)"""
+    db_path = os.path.join('data', db_name)
+    return sqlite3.connect(db_path)
+
+def get_combined_df(query, params=None):
+    """두 데이터베이스(news.db, news_scraped.db)에서 데이터를 가져와 통합하고 중복을 제거함"""
+    df_list = []
+    # 데이터베이스 파일 존재 여부 확인 후 로드
+    for db_file in ['news.db', 'news_scraped.db']:
+        try:
+            full_path = os.path.join('data', db_file)
+            if os.path.exists(full_path):
+                conn = sqlite3.connect(full_path)
+                df = pd.read_sql(query, conn, params=params)
+                conn.close()
+                if not df.empty:
+                    df_list.append(df)
+        except Exception as e:
+            # st.error(f"Error loading {db_file}: {e}") # 사용자에게 너무 많은 에러를 노출하지 않기 위해 주석 처리
+            continue
+    
+    if not df_list:
+        return pd.DataFrame()
+        
+    combined_df = pd.concat(df_list, ignore_index=True)
+    if 'url' in combined_df.columns:
+        combined_df = combined_df.drop_duplicates(subset='url')
+    return combined_df
 
 # ==========================================
 # 1. 기본 설정 및 테마
@@ -88,12 +164,31 @@ st.markdown("""
 # 2. 데이터 로드 함수 (실제 DB + 시장 데이터)
 # ==========================================
 
-def get_metrics_data(start_date, end_date):
-    conn = get_db_conn('news.db')
-    df_sql = pd.read_sql("SELECT AVG(sentiment_score) as avg_s, COUNT(*) as cnt FROM news WHERE date(published_time) BETWEEN ? AND ?", 
-                         conn, params=(start_date.isoformat(), end_date.isoformat()))
-    conn.close()
-    avg_s = df_sql['avg_s'][0] if df_sql['avg_s'][0] is not None else 0.5
+@st.cache_data(ttl=600) # 10분간 캐싱
+def get_map_html():
+    """지도 모듈을 사용하여 기본 HTML 생성"""
+    if not MAP_MODULE_AVAILABLE: return None
+    from map_generator_geo import NewsMapGeneratorGeo
+    
+    # 1. 모듈을 사용하여 기본 지도 생성
+    generator = NewsMapGeneratorGeo()
+    tmp_path = "data/temp_news_map.html"
+    generator.generate(tmp_path, max_news=10)
+    
+    with open(tmp_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+def get_metrics_data(start_date, end_date, region):
+    """선택된 지역과 날짜 범위에 따른 메트릭 계산"""
+    query = "SELECT sentiment_score, url, region FROM news WHERE date(published_time) BETWEEN ? AND ?"
+    df = get_combined_df(query, params=(start_date.isoformat(), end_date.isoformat()))
+    
+    if region != "전국" and not df.empty:
+        df = df[df['region'].str.contains(region, na=False)]
+    
+    avg_s = df['sentiment_score'].mean() if not df.empty and df['sentiment_score'].notnull().any() else 0.5
+    cnt = len(df)
+    
     k_change, q_change = 0.0, 0.0
     if fdr is not None:
         try:
@@ -102,27 +197,32 @@ def get_metrics_data(start_date, end_date):
             k_change = ((k.iloc[-1] / k.iloc[0]) - 1) * 100
             q_change = ((q.iloc[-1] / q.iloc[0]) - 1) * 100
         except: pass
-    return {'sentiment_avg': avg_s, 'volatility': df_sql['cnt'][0] / 10.0, 'k_change': k_change, 'q_change': q_change}
+    return {'sentiment_avg': avg_s, 'volatility': cnt / 10.0, 'k_change': k_change, 'q_change': q_change}
 
 def get_region_map_stats():
-    conn = get_db_conn('news.db')
-    df = pd.read_sql("SELECT region, AVG(sentiment_score) as avg_sentiment, COUNT(*) as count FROM news WHERE region IS NOT NULL GROUP BY region", conn)
-    conn.close()
-    return df
+    query = "SELECT region, sentiment_score, url FROM news WHERE region IS NOT NULL"
+    df = get_combined_df(query)
+    if df.empty:
+        return pd.DataFrame(columns=['region', 'avg_sentiment', 'count'])
+    
+    stats = df.groupby('region').agg(
+        avg_sentiment=('sentiment_score', 'mean'),
+        count=('sentiment_score', 'count')
+    ).reset_index()
+    return stats
 
 def get_issue_list_data(region):
     """키워드별 실제 뉴스 감성 점수 평균을 계산하여 호재/악재 판별"""
     try:
-        conn = get_db_conn('news.db')
-        query = "SELECT keyword, sentiment_score FROM news WHERE keyword IS NOT NULL AND keyword != ''"
-        params = []
+        query = "SELECT keyword, sentiment_score, region, url FROM news WHERE keyword IS NOT NULL AND keyword != ''"
+        df_raw = get_combined_df(query)
+        
+        if df_raw.empty:
+            return pd.DataFrame(columns=['rank', 'issue', 'sentiment', 'score'])
+        
         if region != "전국":
-            query += " AND region LIKE ?"
-            params.append(f'%{region}%')
-        
-        df_raw = pd.read_sql(query, conn, params=params)
-        conn.close()
-        
+            df_raw = df_raw[df_raw['region'].str.contains(region, na=False)]
+            
         df_raw['sentiment_score'] = df_raw['sentiment_score'].fillna(0.5)
         
         if df_raw.empty:
@@ -162,16 +262,20 @@ def get_issue_list_data(region):
         # 화면에 보여줄 점수는 소수점 2자리까지
         df['score_display'] = df['avg_sentiment'].map(lambda x: f"{x:.2f}")
         
-        # UI에서 비율을 계산할 수 있도록 'count' 컬럼 추가 리턴!
         return df[['rank', 'issue', 'sentiment', 'score_display', 'count']]
     except Exception as e:
         return pd.DataFrame(columns=['rank', 'issue', 'sentiment', 'score_display', 'count'])
 
 def get_chart_data(start_date, end_date, region):
-    conn = get_db_conn('news.db')
-    df_s = pd.read_sql("SELECT date(published_time) as date, AVG(sentiment_score) as sentiment_index FROM news WHERE date(published_time) BETWEEN ? AND ? GROUP BY date", 
-                       conn, params=(start_date.isoformat(), end_date.isoformat()))
-    conn.close()
+    query = "SELECT date(published_time) as date, sentiment_score, url FROM news WHERE date(published_time) BETWEEN ? AND ?"
+    df = get_combined_df(query, params=(start_date.isoformat(), end_date.isoformat()))
+    
+    if df.empty:
+        return pd.DataFrame()
+
+    df_s = df.groupby('date')['sentiment_score'].mean().reset_index()
+    df_s.columns = ['date', 'sentiment_index']
+    
     if fdr is not None:
         try:
             df_p = fdr.DataReader('KS11', start_date, end_date)[['Close']].reset_index()
@@ -190,17 +294,17 @@ st.sidebar.markdown("---")
 start_date = st.sidebar.date_input("분석 시작일", datetime.now() - timedelta(days=30))
 end_date = st.sidebar.date_input("분석 종료일", datetime.now())
 asset_type = st.sidebar.radio("자산 종류", ["코스피(KOSPI)", "코스닥(KOSDAQ)"])
-selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "부산", "강원도", "충청도", "전라도", "경상도"])
+selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "강원도", "충청도", "전라도", "경상도"])
 st.sidebar.markdown("---")
 st.sidebar.info("Map Engine: Folium Marker & News Popup Connected")
 
 # ==========================================
 # 4. 상단 메트릭 (Top Metrics)
 # ==========================================
-m = get_metrics_data(start_date, end_date)
+m = get_metrics_data(start_date, end_date, selected_region)
 col1, col2, col3, col4 = st.columns(4)
-with col1: st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
-with col2: st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
+with col1: st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수 ({selected_region})</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
+with col2: st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성 ({selected_region})</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
 with col3: st.markdown(f'<div class="metric-card"><div class="metric-label">코스피 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["k_change"]>0 else "#e74c3c"}">{m["k_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
 with col4: st.markdown(f'<div class="metric-card"><div class="metric-label">코스닥 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["q_change"]>0 else "#e74c3c"}">{m["q_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
 
@@ -212,62 +316,29 @@ st.markdown("<br>", unsafe_allow_html=True)
 mid_col1, mid_col2 = st.columns([1.5, 1])
 with mid_col1:
     st.subheader(f"📍 {selected_region} 인터랙티브 경제 지도")
-    map_stats = get_region_map_stats()
-    coords = {'서울': [37.56, 126.97], '경기도': [37.41, 127.51], '부산': [35.17, 129.07], '강원도': [37.82, 128.15], '충청도': [36.63, 127.49], '전라도': [35.82, 127.14], '경상도': [36.57, 128.50]}
     
-    m_folium = folium.Map(location=[36.5, 127.5], zoom_start=7, tiles="cartodbpositron")
-    
-    conn = get_db_conn('news.db')
-    for region, coord in coords.items():
-        # 해당 지역 기사 목록 가져오기 (팝업용)
-        news_df = pd.read_sql("SELECT title, sentiment_score, keyword, url FROM news WHERE region LIKE ? ORDER BY published_time DESC LIMIT 10", conn, params=(f'%{region}%',))
-        
-        stat = map_stats[map_stats['region'].str.contains(region)]
-        avg_sent = stat['avg_sentiment'].iloc[0] if not stat.empty else 0.5
-        count = stat['count'].iloc[0] if not stat.empty else 0
-        
-        # 정교한 팝업 HTML 생성
-        popup_html = create_popup_html(news_df.to_dict('records'), region)
-        iframe = IFrame(popup_html, width=380, height=350)
-        
-        folium.CircleMarker(
-            location=coord,
-            radius=10 + (count / 5),
-            popup=folium.Popup(iframe, max_width=400),
-            tooltip=f"<b>{region}</b><br>평균 감성: {avg_sent:.2f}<br>뉴스: {count}건 (클릭하여 뉴스보기)",
-            color=get_sentiment_color(avg_sent - 0.5), # 0.5를 기준으로 정규화
-            fill=True,
-            fill_opacity=0.6
-        ).add_to(m_folium)
-    conn.close()
-    st_folium(m_folium, width="stretch", height=400)
+    map_html = get_map_html()
+    if map_html:
+        import streamlit.components.v1 as components
+        components.html(map_html, height=600, scrolling=True)
+    else:
+        st.error("지도 모듈을 로드할 수 없습니다.")
 
 with mid_col2:
     st.subheader(f"🔥 {selected_region} 핵심 이슈 TOP 10")
     issue_df = get_issue_list_data(selected_region)
     
     if not issue_df.empty:
-        # 가장 많이 언급된 횟수를 100% 기준으로 삼기 위한 최댓값 추출
         max_count = issue_df['count'].max()
-        
         for _, row in issue_df.iterrows():
             badge = "badge-pos" if row['sentiment'] == "긍정" else "badge-neg"
             badge_icon = "▲ 긍정" if row['sentiment'] == "긍정" else "▼ 부정"
-            
-            # 1. 배경을 채울 퍼센트 계산 (현재 빈도 / 최대 빈도 * 100)
             fill_pct = int((row['count'] / max_count) * 100) if max_count > 0 else 0
-            
-            # 2. 긍정/부정에 따라 배경 바(Bar) 색상 다르게 지정 (투명도 15%)
             bg_color = "rgba(46, 204, 113, 0.15)" if row['sentiment'] == "긍정" else "rgba(231, 76, 60, 0.15)"
             
-            # 3. CSS linear-gradient로 진행률 바 효과 적용
             custom_style = f"""
-                display:flex; 
-                justify-content:space-between; 
-                align-items:center;
-                padding:10px 12px; 
-                margin-bottom:8px;
-                border-radius:6px;
+                display:flex; justify-content:space-between; align-items:center;
+                padding:10px 12px; margin-bottom:8px; border-radius:6px;
                 border: 1px solid #f0f2f6;
                 background: linear-gradient(90deg, {bg_color} {fill_pct}%, transparent {fill_pct}%);
             """
@@ -286,6 +357,7 @@ with mid_col2:
             st.markdown(html_str, unsafe_allow_html=True)
     else:
         st.info("해당 지역의 이슈 데이터가 없습니다.")
+
 # ==========================================
 # 6. 중단 구역 (Combo Chart)
 # ==========================================
@@ -319,13 +391,20 @@ with tab1:
 with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
 with tab3: st.info("💹 자산별 상세 기술적 지표 및 변동성 분석 영역입니다.")
 with tab4:
-    st.write("### 📰 최신 감성 뉴스 리스트")
-    conn = get_db_conn('news.db')
-    news_list_df = pd.read_sql("SELECT title, sentiment_score, published_time as date, url FROM news ORDER BY date DESC LIMIT 5", conn)
-    conn.close()
-    for _, row in news_list_df.iterrows():
-        color = "#2ecc71" if row['sentiment_score'] > 0.5 else "#e74c3c"
-        st.markdown(f'<div style="padding:10px; border-left:5px solid {color}; background-color:#f9f9f9; margin-bottom:10px; border-radius:4px;"><div style="font-size:0.8em; color:#888;">{row["date"]} | 감성: {row["sentiment_score"]:.2f}</div><div style="font-weight:bold;"><a href="{row["url"]}" target="_blank" style="text-decoration:none; color:#333;">{row["title"]}</a></div></div>', unsafe_allow_html=True)
+    st.write(f"### 📰 {selected_region} 최신 감성 뉴스 리스트")
+    latest_news_query = "SELECT title, sentiment_score, published_time as date, url, region FROM news"
+    news_list_df = get_combined_df(latest_news_query)
+    
+    if not news_list_df.empty:
+        if selected_region != "전국":
+            news_list_df = news_list_df[news_list_df['region'].str.contains(selected_region, na=False)]
+        
+        news_list_df = news_list_df.sort_values('date', ascending=False).head(5)
+        for _, row in news_list_df.iterrows():
+            color = "#2ecc71" if row['sentiment_score'] > 0.5 else "#e74c3c"
+            st.markdown(f'<div style="padding:10px; border-left:5px solid {color}; background-color:#f9f9f9; margin-bottom:10px; border-radius:4px;"><div style="font-size:0.8em; color:#888;">{row["date"]} | 감성: {row["sentiment_score"]:.2f}</div><div style="font-weight:bold;"><a href="{row["url"]}" target="_blank" style="text-decoration:none; color:#333;">{row["title"]}</a></div></div>', unsafe_allow_html=True)
+    else:
+        st.info(f"{selected_region} 지역의 뉴스 데이터가 없습니다.")
 
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #999;'>© 2026 지능형 지역 경제 & 자산 분석 시스템 (Hybrid Map Connected)</p>", unsafe_allow_html=True)
