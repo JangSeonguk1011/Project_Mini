@@ -126,15 +126,15 @@ def get_issue_list_data(region):
 
 # [주석] 사용자가 선택한 상위 지역명(전라도, 경상도 등)을 하위 행정구역(전남, 전북 등)과 매칭하여 통합 필터링합니다.
 def get_chart_data(start_date, end_date, region, asset_type="코스피(KOSPI)"):
-    # [주석] DB에서 데이터를 가져올 때 날짜, 감성점수, 지역 정보를 모두 로드합니다.
+    # [주석] 1. DB에서 해당 기간의 뉴스 감성 데이터 로드
     query = "SELECT date(published_time) as date, sentiment_score, region FROM news WHERE date(published_time) BETWEEN ? AND ?"
     df = get_combined_df(query, params=(start_date.isoformat(), end_date.isoformat()))
-    
+   
     if df.empty:
         return pd.DataFrame()
 
-    # [주석] 지역 통합 매핑 사전 정의
-    # 사용자가 선택한 '도' 단위 이름에 대응하는 DB 내의 '세부 지역 키워드'를 리스트로 묶습니다.
+
+    # [주석] 2. 지역 통합 필터링 (전라도, 경상도 등)
     region_map = {
         "전라도": ["전남", "전북", "전라"],
         "경상도": ["경남", "경북", "경상"],
@@ -142,38 +142,47 @@ def get_chart_data(start_date, end_date, region, asset_type="코스피(KOSPI)"):
         "경기도": ["경기"]
     }
 
+
     if region != "전국":
         if region in region_map:
-            # [주석] 선택된 지역이 통합 대상(전라도, 경상도 등)인 경우
-            # 예: '전남' 또는 '전북' 또는 '전라'가 포함된 행만 필터링합니다.
             search_keywords = "|".join(region_map[region])
             df = df[df['region'].str.contains(search_keywords, na=False)]
         else:
-            # [주석] 서울 등 단일 키워드 지역인 경우 기존 방식대로 필터링합니다.
             df = df[df['region'].str.contains(region, na=False)]
-    
+   
     if df.empty:
         return pd.DataFrame()
 
-    # [주석] 필터링된 통합 지역 데이터를 날짜별로 그룹화하여 평균 감성 점수를 계산합니다.
+
+    # [주석] 3. 일별 감성 지수 평균 계산
     df_s = df.groupby('date')['sentiment_score'].mean().reset_index()
     df_s.columns = ['date', 'sentiment_index']
-    
-    # [주석] 금융 데이터(KOSPI/KOSDAQ) 병합 로직
+   
+    # [주석] 4. 주가 데이터 병합 및 주말 보정
     if fdr is not None:
         try:
             symbol = 'KQ11' if "코스닥" in asset_type else 'KS11'
             df_p = fdr.DataReader(symbol, start_date, end_date)[['Close']].reset_index()
             df_p.columns = ['date', 'asset_price']
             df_p['date'] = df_p['date'].dt.date.astype(str)
-            
-            # [주석] inner join을 통해 뉴스 감성과 주가 데이터가 모두 존재하는 날짜만 추출합니다.
-            return pd.merge(df_s, df_p, on='date', how='inner')
+           
+            # [주석] 핵심 1: 'left' 병합을 사용하여 주가가 없는 주말 뉴스 데이터도 보존합니다.
+            merged_df = pd.merge(df_s, df_p, on='date', how='left')
+           
+            # [주석] 핵심 2: 주말/휴일의 빈 주가(NaN)를 직전 영업일 가격으로 채웁니다 (Forward Fill).
+            # 이렇게 하면 선 그래프가 끊기지 않고 이어집니다.
+            merged_df['asset_price'] = merged_df['asset_price'].fillna(method='ffill')
+           
+            # [주석] 만약 첫날이 주말이라 이전 데이터가 없다면 다음날 데이터로 채웁니다 (Backward Fill).
+            merged_df['asset_price'] = merged_df['asset_price'].fillna(method='bfill')
+           
+            return merged_df
         except Exception as e:
-            print(f"FinanceDataReader Error: {e}")
-            pass
-    
+            print(f"Error merging data: {e}")
+            return df_s
+   
     return df_s
+
 
 # ==========================================
 # 메인 로직
@@ -223,89 +232,224 @@ with mid_col2:
             st.markdown(f'<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; margin-bottom:8px; border-radius:6px; border: 1px solid #f0f2f6; background: linear-gradient(90deg, {bg_color} {fill_pct}%, transparent {fill_pct}%);"><span style="font-weight:bold; color:#333;">{row["rank"]}. {row["issue"]} <span style="font-size:12px; color:#888;">({row["count"]}건)</span></span><span class="{badge}">{badge_icon} {row["score_display"]}</span></div>', unsafe_allow_html=True)
     else: st.info("이슈 데이터가 없습니다.")
 
-# ==========================================
+# ==============================
 # 6. 중단 구역 (Combo Chart)
-# ==========================================
+# ==============================
 st.markdown("<br>", unsafe_allow_html=True)
 st.subheader(f"📊 {selected_region} 감성 지수 및 자산 가격 추이")
 
-# [주석] 사용자가 선택한 지역(selected_region)을 인자로 넘겨 해당 지역 데이터만 가져옵니다.
 chart_df = get_chart_data(start_date, end_date, selected_region, asset_type)
 
 if not chart_df.empty:
     fig = go.Figure()
-    
-    # [주석] 막대 그래프: 선택된 지역의 일별 감성 점수
+
+    # 🔥 음수만 절댓값 처리 (그래프 표시용)
+    display_values = chart_df['sentiment_index'].apply(
+        lambda x: abs(x) if pd.notnull(x) and x < 0 else x
+    )
+
+    # 🔥 색상 조건 (음수=빨강, 양수=파랑)
+    colors = chart_df['sentiment_index'].apply(
+        lambda x: 'rgba(231,76,60,0.7)' if pd.notnull(x) and x < 0 
+        else 'rgba(100,149,237,0.6)'
+    )
+
+    # -------------------------------
+    # 감성 지수 막대 (음수 처리 포함)
+    # -------------------------------
+
+    real_values = chart_df['sentiment_index']
+
+    # 그래프에 표시될 값
+    display_values = np.where(real_values < 0, np.abs(real_values), real_values)
+
+    # 색상 설정
+    colors = np.where(real_values < 0,
+                      'rgba(231, 76, 60, 0.8)',   # 음수 → 빨강
+                      'rgba(100, 149, 237, 0.6)') # 양수 → 파랑
+
     fig.add_trace(go.Bar(
-        x=chart_df['date'], 
-        y=chart_df['sentiment_index'], 
-        name=f"{selected_region} 감성 지수", 
-        marker_color='rgba(100, 149, 237, 0.6)', 
-        yaxis='y1'
+        x=chart_df['date'],
+        y=display_values,  # 🔥 여기 절댓값 들어감
+        name=f"{selected_region} 감성 지수",
+        marker_color=colors,
+        yaxis='y1',
+            customdata=real_values,  # 🔥 실제값 저장
+        hovertemplate=
+            "날짜: %{x}<br>" +
+            "실제 감성: %{customdata:.3f}<br>" +
+            "표시값: %{y:.3f}<extra></extra>"
     ))
-    
-    # [주석] 선 그래프: 선택된 자산(KOSPI/KOSDAQ)의 종가
+
+
+    # ✅ 자산 가격 선 그래프
     fig.add_trace(go.Scatter(
-        x=chart_df['date'], 
-        y=chart_df['asset_price'], 
-        name=asset_type, 
-        line=dict(color='firebrick', width=3), 
+        x=chart_df['date'],
+        y=chart_df['asset_price'],
+        name=asset_type,
+        line=dict(color='firebrick', width=3),
         yaxis='y2'
     ))
-    
-    # [주석] 레이아웃 설정: 2개의 Y축을 사용하여 수치 차이를 극복합니다.
+
+    # ✅ 레이아웃 유지 (0~1 고정)
     fig.update_layout(
-        yaxis=dict(title="감성 지수 (0~1)", range=[0, 1]), 
-        yaxis2=dict(title=f"{asset_type} 가격", side="right", overlaying="y", showgrid=False), 
-        height=450, 
+        yaxis=dict(title="감성 지수 (0~1)", range=[0, 1]),
+        yaxis2=dict(
+            title=f"{asset_type} 가격",
+            side="right",
+            overlaying="y",
+            showgrid=False
+        ),
+        height=450,
         template="plotly_white",
-        hovermode="x unified", # [주석] 마우스를 올리면 같은 날짜의 데이터가 동시에 보입니다.
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        hovermode="x unified",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
     )
+
     st.plotly_chart(fig, use_container_width=True)
+
 else:
-    # [주석] 해당 지역에 뉴스 데이터가 없을 경우를 위한 안내 문구입니다.
     st.warning(f"⚠️ {selected_region} 지역의 해당 기간 내 분석 데이터가 존재하지 않습니다.")
 
 # 하단 탭
 tab1, tab2, tab3, tab4 = st.tabs(["상관관계 분석", "감성 타임라인", "성과 분석", "최신 뉴스"])
 with tab1:
     btm_col1, btm_col2 = st.columns(2)
-    with btm_col1:
-        
-        st.write("### 🔍 감성-자산 상관계수 히트맵")
-        if not chart_df.empty and fdr is not None:
-            try:
-                # 1. KOSPI, KOSDAQ 데이터 각각 가져오기
-                k = fdr.DataReader('KS11', start_date, end_date)['Close'].reset_index()
-                q = fdr.DataReader('KQ11', start_date, end_date)['Close'].reset_index()
-                k.columns = ['date', 'KOSPI']
-                q.columns = ['date', 'KOSDAQ']
-                k['date'] = k['date'].dt.date.astype(str)
-                q['date'] = q['date'].dt.date.astype(str)
+    
+    if not chart_df.empty:
+        try:
+            # [주석] 3x3 히트맵을 위해 KOSPI와 KOSDAQ 데이터를 실시간으로 가져옵니다.
+            k_df = fdr.DataReader('KS11', start_date, end_date)[['Close']].rename(columns={'Close': 'KOSPI'})
+            q_df = fdr.DataReader('KQ11', start_date, end_date)[['Close']].rename(columns={'Close': 'KOSDAQ'})
+            
+            # 날짜 형식 맞추기
+            k_df.index = k_df.index.date.astype(str)
+            q_df.index = q_df.index.date.astype(str)
+            
+            # [주석] 감성 지수와 두 지수 데이터를 날짜 기준으로 병합합니다.
+            total_corr_df = chart_df[['date', 'sentiment_index']].merge(k_df, left_on='date', right_index=True)
+            total_corr_df = total_corr_df.merge(q_df, left_on='date', right_index=True)
+            
+            # [주석] 항목 이름을 요청하신 대로 '감성', 'KOSPI', 'KOSDAQ'으로 설정합니다.
+            # 컬럼명을 변경하여 히트맵 라벨에 바로 적용되도록 합니다.
+            corr_input = total_corr_df[['sentiment_index', 'KOSPI', 'KOSDAQ']].rename(
+                columns={'sentiment_index': '감성'}
+            )
+            
+            # 실제 상관계수 계산 (3x3 행렬 생성)
+            matrix = corr_input.corr()
+            labels = ['감성', 'KOSPI', 'KOSDAQ']
+            
+            with btm_col1:
+                st.write("### 🔍 감성-자산 상관계수 히트맵")
+                # [주석] 데이터 연동은 유지하되, 항목 레이블을 이전과 동일하게 배치합니다.
+                fig_heatmap = px.imshow(
+                    matrix,
+                    text_auto=".2f", # 소수점 둘째자리까지 표시
+                    x=labels, 
+                    y=labels,
+                    color_continuous_scale='RdBu_r', # 붉은색(+)과 푸른색(-) 대비
+                    range_color=[-1, 1] # 범위 고정
+                )
+                # 차트 레이아웃 최적화
+                fig_heatmap.update_layout(width=None, height=400, margin=dict(l=20, r=20, t=20, b=20))
+                st.plotly_chart(fig_heatmap, use_container_width=True)
                 
-                # 2. 감성 데이터(chart_df)와 주식 데이터 병합하기
-                corr_df = pd.merge(chart_df[['date', 'sentiment_index']], k, on='date', how='inner')
-                corr_df = pd.merge(corr_df, q, on='date', how='inner')
+            with btm_col2:
+                # [주석] 오른쪽은 선택된 자산에 따른 산점도를 유지합니다.
+                target_col = 'KOSPI' if 'KOSPI' in asset_type else 'KOSDAQ'
+                st.write(f"### 📉 감성 vs {target_col} 수익률 산점도")
                 
-                # 3. 실제 상관계수 계산 (대각선은 무조건 1.0이 나옵니다!)
-                corr_matrix = corr_df[['sentiment_index', 'KOSPI', 'KOSDAQ']].corr()
-                corr_matrix.columns = ['감성', 'KOSPI', 'KOSDAQ']
-                corr_matrix.index = ['감성', 'KOSPI', 'KOSDAQ']
+                fig_scatter = px.scatter(
+                    total_corr_df,
+                    x='sentiment_index',
+                    y=target_col,
+                    trendline="ols",
+                    template="plotly_white",
+                    labels={'sentiment_index': '뉴스 감성 지수', target_col: f'{target_col} 가격'}
+                )
+                st.plotly_chart(fig_scatter, use_container_width=True)
                 
-                # 4. 차트 그리기
-                fig_heat = px.imshow(corr_matrix, text_auto=".2f", color_continuous_scale='RdBu_r', aspect="auto")
-                st.plotly_chart(fig_heat, width="stretch")
-            except Exception as e:
-                st.warning("상관관계를 계산하기 위한 주가 데이터가 충분하지 않습니다.")
-        else:
-            st.info("상관관계 분석을 위한 데이터가 없습니다.")
-    with btm_col2:
-        st.write("### 📉 감성 vs 자산 수익률 산점도")
-        if not chart_df.empty:
-            st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), width="stretch")
-
-with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
+        except Exception as e:
+            st.warning(f"데이터 연동 중 일부 지수 데이터를 불러오지 못했습니다: {e}")
+            # 데이터 부족 시 안내
+            st.info("FinanceDataReader를 통해 KOSPI/KOSDAQ 데이터를 가져오는 중입니다. 잠시만 기다려주세요.")
+    else:
+        st.info("상관관계 분석을 위한 데이터가 충분하지 않습니다.")
+with tab2:
+    st.write(f"### 📅 {selected_region} 일별 감성 캘린더")
+   
+    if not chart_df.empty:
+        # [주석] 캘린더 구조 생성을 위한 날짜 처리
+        cal_df = chart_df.copy()
+        cal_df['date'] = pd.to_datetime(cal_df['date'])
+        cal_df['day'] = cal_df['date'].dt.day
+        cal_df['week'] = cal_df['date'].dt.isocalendar().week
+        cal_df['weekday'] = cal_df['date'].dt.weekday # 0:월 ~ 6:일
+       
+        # [주석] 피벗 테이블 생성 및 데이터 없는 요일(NaN) 채우기
+        z_raw = cal_df.pivot_table(index='week', columns='weekday', values='sentiment_index')
+        t_raw = cal_df.pivot_table(index='week', columns='weekday', values='day')
+       
+        # [주석] ValueError 방지: 항상 0~6(월~일)까지 7개의 컬럼을 유지하도록 재정렬합니다.
+        z_data = z_raw.reindex(columns=range(7))
+        t_data = t_raw.reindex(columns=range(7))
+       
+        weekdays = ['월', '화', '수', '목', '금', '토', '일']
+       
+        # [주석] 캘린더 히트맵 시각화
+        fig_cal = px.imshow(
+            z_data, x=weekdays, y=z_data.index,
+            color_continuous_scale='RdBu_r', range_color=[0, 1],
+            aspect="auto", labels=dict(color="감성")
+        )
+        fig_cal.update_traces(
+            text=t_data, texttemplate="%{text}", # 칸 안에 날짜 표시
+            hovertemplate="<b>%{x}요일</b><br>감성 점수: %{z:.2f}<extra></extra>",
+            textfont=dict(size=14, color="black")
+        )
+        fig_cal.update_layout(xaxis_title="", yaxis_title="주차", height=400, template="plotly_white")
+        st.plotly_chart(fig_cal, use_container_width=True)
+       
+        # [주석] 캘린더 하단 상세 리포트 및 뉴스 연동
+        st.markdown("---")
+        st.write("🔍 **날짜별 상세 감성 뉴스 리포트**")
+       
+        sorted_dates = sorted(chart_df['date'].unique())
+        s_date = st.select_slider("날짜 선택", options=sorted_dates, value=sorted_dates[-1])
+       
+        # [주석] 선택된 날짜의 실제 뉴스 리스트를 DB에서 가져옵니다.
+        # 이전에 통합한 지역 필터링(전라도-전남/전북 등)이 적용된 get_combined_df를 호출합니다.
+        day_news = get_combined_df("SELECT title, sentiment_score, url, region FROM news WHERE date(published_time) = ?", params=(str(s_date),))
+       
+        # [주석] 지역 필터링 적용
+        if selected_region != "전국":
+            day_news = day_news[day_news['region'].str.contains(selected_region, na=False)]
+           
+        col_res1, col_res2 = st.columns([1, 2])
+        day_avg = chart_df[chart_df['date'] == s_date]['sentiment_index'].values[0]
+       
+        with col_res1:
+            res_status = "🚀 긍정" if day_avg > 0.55 else "📉 부정" if day_avg < 0.45 else "☁️ 중립"
+            st.metric(label=f"{s_date} 종합", value=res_status, delta=f"{day_avg:.2f}")
+            st.progress(day_avg)
+           
+        with col_res2:
+            if not day_news.empty:
+                st.write(f"📄 **해당 날짜 주요 기사 (최대 5건)**")
+                for _, row in day_news.sort_values('sentiment_score', ascending=False).head(5).iterrows():
+                    icon = "🟢" if row['sentiment_score'] > 0.5 else "🔴"
+                    st.markdown(f"{icon} [{row['title']}]({row['url']}) `({row['sentiment_score']:.2f})`")
+            else:
+                st.info("상세 뉴스 내역이 없습니다.")
+    else:
+        st.warning("데이터가 부족하여 캘린더를 표시할 수 없습니다.")
 with tab3:
     st.write(f"### 💹 {asset_type} 기술적 지표 및 변동성 분석")
     if fdr is not None:
