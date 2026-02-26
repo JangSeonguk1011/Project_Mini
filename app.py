@@ -255,7 +255,68 @@ with tab1:
             st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), width="stretch")
 
 with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
-with tab3: st.info("💹 자산별 상세 기술적 지표 및 변동성 분석 영역입니다.")
+with tab3:
+    st.write(f"### 💹 {asset_type} 기술적 지표 및 변동성 분석")
+    if fdr is not None:
+        try:
+            # 1. 이동평균선을 구하려면 과거 데이터가 더 필요하므로 시작일을 60일 더 앞으로 당겨서 가져옵니다.
+            tech_start = start_date - timedelta(days=60)
+            symbol = 'KS11' if "KOSPI" in asset_type or "코스피" in asset_type else 'KQ11'
+            df_tech = fdr.DataReader(symbol, tech_start, end_date).reset_index()
+            
+            if not df_tech.empty:
+                # 2. 기술적 지표 계산 (Pandas 활용)
+                df_tech['MA20'] = df_tech['Close'].rolling(window=20).mean() # 20일 이동평균선
+                df_tech['StdDev'] = df_tech['Close'].rolling(window=20).std() # 20일 표준편차
+                df_tech['Upper_Band'] = df_tech['MA20'] + (df_tech['StdDev'] * 2) # 볼린저 밴드 상단
+                df_tech['Lower_Band'] = df_tech['MA20'] - (df_tech['StdDev'] * 2) # 볼린저 밴드 하단
+                
+                # 3. 화면에 그릴 때는 사용자가 선택한 기간만 잘라서 보여줍니다.
+                df_tech['Date_str'] = df_tech['Date'].dt.date.astype(str)
+                mask = (df_tech['Date'].dt.date >= start_date) & (df_tech['Date'].dt.date <= end_date)
+                df_plot = df_tech.loc[mask]
+                
+                # 4. 차트 그리기
+                fig_tech = go.Figure()
+                
+                # 종가 선
+                fig_tech.add_trace(go.Scatter(x=df_plot['Date_str'], y=df_plot['Close'], name='실제 주가(종가)', line=dict(color='#2c3e50', width=2)))
+                # 20일 이동평균선
+                fig_tech.add_trace(go.Scatter(x=df_plot['Date_str'], y=df_plot['MA20'], name='20일 추세선(MA20)', line=dict(color='#f39c12', width=2)))
+                # 볼린저 밴드 (상단~하단 색칠)
+                fig_tech.add_trace(go.Scatter(x=df_plot['Date_str'], y=df_plot['Upper_Band'], name='변동성 상단', line=dict(color='rgba(52, 152, 219, 0.6)', dash='dash')))
+                fig_tech.add_trace(go.Scatter(x=df_plot['Date_str'], y=df_plot['Lower_Band'], name='변동성 하단', fill='tonexty', fillcolor='rgba(52, 152, 219, 0.15)', line=dict(color='rgba(52, 152, 219, 0.6)', dash='dash')))
+                if not chart_df.empty:
+                   fig_tech.add_trace(go.Scatter(
+                        x=chart_df['date'], 
+                        y=chart_df['sentiment_index'], 
+                        name="지역 감성 지수", 
+                        line=dict(color='#8e44ad', width=2.5, dash='dot', shape='spline'), # 보라색 점선, 부드러운 곡선 처리
+                        yaxis='y2'
+                    ))
+
+                # 👇 [수정할 부분!] 오른쪽 Y축(y2) 설정을 추가하고 범례 위치를 깔끔하게 맞춥니다.
+                fig_tech.update_layout(
+                    height=500, 
+                    template="plotly_white", 
+                    hovermode="x unified",
+                    xaxis=dict(range=[start_date, end_date]), # 사이드바 날짜 고정
+                    yaxis=dict(title=f"{asset_type} 가격"), # 왼쪽 Y축 (주가)
+                    yaxis2=dict(title="감성 지수", overlaying="y", side="right", range=[0, 1], showgrid=False), # 오른쪽 Y축 (감성)
+                    legend=dict(orientation="h", yanchor="bottom", y=1.05, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig_tech, use_container_width=True)
+                
+                # 5. 실제 역사적 변동성(Historical Volatility) 계산 (연율화)
+                daily_returns = df_plot['Close'].pct_change().dropna()
+                historical_volatility = daily_returns.std() * np.sqrt(252) * 100
+                
+                st.info(f"💡 **분석 포인트:** 현재 선택하신 기간 동안 {asset_type}의 실제 주가 변동성(연환산)은 약 **{historical_volatility:.2f}%** 입니다. 볼린저 밴드(파란 영역)가 넓어질수록 시장의 불안정성(변동폭)이 커짐을 의미합니다.")
+                
+        except Exception as e:
+            st.error("기술적 지표를 계산하는 중 오류가 발생했습니다.")
+    else:
+        st.warning("FinanceDataReader 라이브러리가 설치되어 있지 않아 분석을 실행할 수 없습니다.")
 with tab4:
     st.write(f"#### 📰 {selected_region} 최신 감성 뉴스")
     news_q = "SELECT title, sentiment_score, published_time as date, url, region FROM news"
