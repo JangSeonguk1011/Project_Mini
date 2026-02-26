@@ -150,15 +150,21 @@ st.sidebar.markdown("---")
 start_date = st.sidebar.date_input("분석 시작일", datetime.now() - timedelta(days=30))
 end_date = st.sidebar.date_input("분석 종료일", datetime.now())
 asset_type = st.sidebar.radio("자산 종류", ["코스피(KOSPI)", "코스닥(KOSDAQ)"])
-selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "부산", "강원도", "충청도", "전라도", "경상도"])
+selected_region = st.sidebar.selectbox("분석 지역 선택", ["전국", "서울", "경기도", "강원도", "충청도", "전라도", "경상도"])
 
 m = get_metrics_data(start_date, end_date, selected_region)
 col1, col2, col3, col4 = st.columns(4)
-with col1: st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수 ({selected_region})</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
-with col2: st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성 ({selected_region})</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
-with col3: st.markdown(f'<div class="metric-card"><div class="metric-label">{asset_type} 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["k_change"]>0 else "#e74c3c"}">{m["k_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
-with col4: st.markdown(f'<div class="metric-card"><div class="metric-label">수집 뉴스량</div><div class="metric-value">{int(m["volatility"]*10)}건</div></div>', unsafe_allow_html=True)
 
+with col1: 
+    st.markdown(f'<div class="metric-card"><div class="metric-label">종합 감성지수 ({selected_region})</div><div class="metric-value">{m["sentiment_avg"]:.2f}</div></div>', unsafe_allow_html=True)
+with col2: 
+    st.markdown(f'<div class="metric-card"><div class="metric-label">경제 변동성 ({selected_region})</div><div class="metric-value">{m["volatility"]:.1f}%</div></div>', unsafe_allow_html=True)
+with col3: 
+    # 코스피(KOSPI) 변동률 고정 (k_change 사용)
+    st.markdown(f'<div class="metric-card"><div class="metric-label">코스피(KOSPI) 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["k_change"]>0 else "#e74c3c"}">{m["k_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
+with col4: 
+    # 수집 뉴스량 대신 코스닥(KOSDAQ) 변동률로 변경 (q_change 사용)
+    st.markdown(f'<div class="metric-card"><div class="metric-label">코스닥(KOSDAQ) 변동</div><div class="metric-value" style="color:{"#2ecc71" if m["q_change"]>0 else "#e74c3c"}">{m["q_change"]:+.2f}%</div></div>', unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 중앙 구역
@@ -184,27 +190,70 @@ with mid_col2:
             st.markdown(f'<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; margin-bottom:8px; border-radius:6px; border: 1px solid #f0f2f6; background: linear-gradient(90deg, {bg_color} {fill_pct}%, transparent {fill_pct}%);"><span style="font-weight:bold; color:#333;">{row["rank"]}. {row["issue"]} <span style="font-size:12px; color:#888;">({row["count"]}건)</span></span><span class="{badge}">{badge_icon} {row["score_display"]}</span></div>', unsafe_allow_html=True)
     else: st.info("이슈 데이터가 없습니다.")
 
-# 중단 차트
-st.subheader(f"📊 {selected_region} 감성 지수 및 {asset_type} 추이")
+# 
+# ==========================================
+# 6. 중단 구역 (Combo Chart)
+# ==========================================
+st.markdown("<br>", unsafe_allow_html=True)
+st.subheader("📊 지역 감성 지수 및 자산 가격 추이")
+
+# [주석] 사이드바의 asset_type(라디오 버튼 값)을 함수 인자로 전달합니다.
 chart_df = get_chart_data(start_date, end_date, selected_region, asset_type)
+
 if not chart_df.empty:
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=chart_df['date'], y=chart_df['sentiment_index'], name="감성 지수", marker_color='rgba(100, 149, 237, 0.6)', yaxis='y1'))
-    fig.add_trace(go.Scatter(x=chart_df['date'], y=chart_df['asset_price'], name="자산 가격", line=dict(color='firebrick', width=3), yaxis='y2'))
-    fig.update_layout(yaxis=dict(title="감성 지수", range=[0, 1]), yaxis2=dict(title="자산 가격", side="right", overlaying="y", showgrid=False), height=450, template="plotly_white")
+    # [주석] 범례 이름을 선택된 자산명으로 동적 변경합니다.
+    fig.add_trace(go.Bar(x=chart_df['date'], y=chart_df['sentiment_index'], name="지역 감성 지수", marker_color='rgba(100, 149, 237, 0.6)', yaxis='y1'))
+    fig.add_trace(go.Scatter(x=chart_df['date'], y=chart_df['asset_price'], name=asset_type, line=dict(color='firebrick', width=3), yaxis='y2'))
+    
+    # [주석] 오른쪽 Y축 제목도 자산명에 따라 바뀝니다.
+    fig.update_layout(
+        yaxis=dict(title="감성 지수", range=[0, 1]), 
+        yaxis2=dict(title=f"{asset_type} 가격", side="right", overlaying="y", showgrid=False), 
+        height=450, 
+        template="plotly_white",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 # 하단 탭
 tab1, tab2, tab3, tab4 = st.tabs(["상관관계 분석", "감성 타임라인", "성과 분석", "최신 뉴스"])
 with tab1:
-    st.write("#### 🔍 다각도 상관 분석")
-    c1, c2 = st.columns(2)
-    with c1:
-        st.write("🌡️ 상관계수 히트맵")
-        st.plotly_chart(px.imshow(np.random.uniform(0.6, 0.9, (3, 3)), text_auto=True, x=['감성','KOSPI','KOSDAQ'], y=['감성','KOSPI','KOSDAQ'], color_continuous_scale='RdBu_r'), use_container_width=True)
-    with c2:
-        st.write("📉 감성 vs 가격 산점도")
-        st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), use_container_width=True)
+    btm_col1, btm_col2 = st.columns(2)
+    with btm_col1:
+        
+        st.write("### 🔍 감성-자산 상관계수 히트맵")
+        if not chart_df.empty and fdr is not None:
+            try:
+                # 1. KOSPI, KOSDAQ 데이터 각각 가져오기
+                k = fdr.DataReader('KS11', start_date, end_date)['Close'].reset_index()
+                q = fdr.DataReader('KQ11', start_date, end_date)['Close'].reset_index()
+                k.columns = ['date', 'KOSPI']
+                q.columns = ['date', 'KOSDAQ']
+                k['date'] = k['date'].dt.date.astype(str)
+                q['date'] = q['date'].dt.date.astype(str)
+                
+                # 2. 감성 데이터(chart_df)와 주식 데이터 병합하기
+                corr_df = pd.merge(chart_df[['date', 'sentiment_index']], k, on='date', how='inner')
+                corr_df = pd.merge(corr_df, q, on='date', how='inner')
+                
+                # 3. 실제 상관계수 계산 (대각선은 무조건 1.0이 나옵니다!)
+                corr_matrix = corr_df[['sentiment_index', 'KOSPI', 'KOSDAQ']].corr()
+                corr_matrix.columns = ['감성', 'KOSPI', 'KOSDAQ']
+                corr_matrix.index = ['감성', 'KOSPI', 'KOSDAQ']
+                
+                # 4. 차트 그리기
+                fig_heat = px.imshow(corr_matrix, text_auto=".2f", color_continuous_scale='RdBu_r', aspect="auto")
+                st.plotly_chart(fig_heat, width="stretch")
+            except Exception as e:
+                st.warning("상관관계를 계산하기 위한 주가 데이터가 충분하지 않습니다.")
+        else:
+            st.info("상관관계 분석을 위한 데이터가 없습니다.")
+    with btm_col2:
+        st.write("### 📉 감성 vs 자산 수익률 산점도")
+        if not chart_df.empty:
+            st.plotly_chart(px.scatter(chart_df, x='sentiment_index', y='asset_price', trendline="ols", template="plotly_white"), width="stretch")
+
 with tab2: st.info("🕒 뉴스 수집 시간에 따른 감성 변화 타임라인 분석을 준비 중입니다.")
 with tab3: st.info("💹 자산별 상세 기술적 지표 및 변동성 분석 영역입니다.")
 with tab4:
