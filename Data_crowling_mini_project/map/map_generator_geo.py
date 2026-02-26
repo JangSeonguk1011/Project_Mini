@@ -45,24 +45,30 @@ class NewsMapGeneratorGeo:
             cursor.execute(f"ATTACH DATABASE '{self.db_scraped}' AS scraped")
         return conn
 
-    def get_region_statistics(self):
+    def get_region_statistics(self, start_date, end_date):
+        # 날짜를 문자열로 변환 (YYYY-MM-DD)
+        if hasattr(start_date, 'strftime'):
+            start_date = start_date.strftime('%Y-%m-%d')
+        if hasattr(end_date, 'strftime'):
+            end_date = end_date.strftime('%Y-%m-%d')
         """통합 DB에서 지역별 통계 추출"""
         conn = self._get_integrated_conn()
         cursor = conn.cursor()
         cursor.execute("PRAGMA database_list")
         databases = [row[1] for row in cursor.fetchall()]
         
-        subquery = "SELECT region, sentiment_score FROM main.news"
+        subquery = "SELECT region, sentiment_score, published_time FROM main.news"
         if 'scraped' in databases:
-            subquery += " UNION ALL SELECT region, sentiment_score FROM scraped.news"
-            
-        query = f"""
+            subquery += " UNION ALL SELECT region, sentiment_score, published_time FROM scraped.news"
+        query = f'''
         SELECT region, COUNT(*) as count,
                SUM(CASE WHEN sentiment_score > 0 THEN 1 ELSE 0 END) as positive_count,
                SUM(CASE WHEN sentiment_score < 0 THEN 1 ELSE 0 END) as negative_count
-        FROM ({subquery}) GROUP BY region
-        """
-        db_stats_df = pd.read_sql_query(query, conn)
+        FROM ({subquery})
+        WHERE DATE(published_time) BETWEEN ? AND ?
+        GROUP BY region
+        '''
+        db_stats_df = pd.read_sql_query(query, conn, params=(start_date, end_date))
         conn.close()
         
         db_stats = db_stats_df.set_index('region').to_dict('index')
@@ -81,7 +87,12 @@ class NewsMapGeneratorGeo:
             }
         return consolidated_stats
 
-    def get_latest_news_integrated(self, db_region: str, limit: int = 5):
+    def get_latest_news_integrated(self, db_region: str, start_date, end_date, limit: int = 5):
+        # 날짜를 문자열로 변환 (YYYY-MM-DD)
+        if hasattr(start_date, 'strftime'):
+            start_date = start_date.strftime('%Y-%m-%d')
+        if hasattr(end_date, 'strftime'):
+            end_date = end_date.strftime('%Y-%m-%d')
         """[rowid 에러 해결] 통합 DB에서 최신 뉴스 리스트 추출"""
         conn = self._get_integrated_conn()
         cursor = conn.cursor()
@@ -91,19 +102,21 @@ class NewsMapGeneratorGeo:
         sub_regions = self.REGION_CONSOLIDATION.get(db_region, [db_region])
         placeholders = ', '.join(['?'] * len(sub_regions))
         
-        subquery = "SELECT title, sentiment_score, url, keyword, region FROM main.news"
+        subquery = "SELECT title, sentiment_score, url, keyword, region, published_time FROM main.news"
         if 'scraped' in databases:
-            subquery += " UNION ALL SELECT title, sentiment_score, url, keyword, region FROM scraped.news"
-            
-        query = f"SELECT title, sentiment_score, url, keyword FROM ({subquery}) WHERE region IN ({placeholders}) LIMIT ?"
-        
-        df = pd.read_sql_query(query, conn, params=(*sub_regions, limit))
+            subquery += " UNION ALL SELECT title, sentiment_score, url, keyword, region, published_time FROM scraped.news"
+        query = f'''
+        SELECT title, sentiment_score, url, keyword, published_time FROM ({subquery})
+        WHERE region IN ({placeholders}) AND DATE(published_time) BETWEEN ? AND ?
+        LIMIT ?
+        '''
+        df = pd.read_sql_query(query, conn, params=(*sub_regions, start_date, end_date, limit))
         conn.close()
         return df.to_dict('records')
 
-    def create_popup_html(self, db_region: str, stat: Dict, max_news: int = 5):
+    def create_popup_html(self, db_region: str, stat: Dict, start_date, end_date, max_news: int = 5):
         """가로형 3열 UI 팝업"""
-        news_list = self.get_latest_news_integrated(db_region, limit=max_news)
+        news_list = self.get_latest_news_integrated(db_region, start_date, end_date, limit=max_news)
         ratio_color = '#f44336' if stat['neg_ratio'] > 51 else '#2196F3'
         
         html_content = f"""
@@ -150,12 +163,12 @@ class NewsMapGeneratorGeo:
         </div>'''
         self.map.get_root().html.add_child(folium.Element(legend_html))
 
-    def generate(self, output_file: str = 'news_map_geo.html'):
+    def generate(self, start_date, end_date, output_file: str = 'news_map_geo.html'):
         with open(self.geojson_path, 'r', encoding='utf-8') as f:
             self.geojson_data = json.load(f)
         
         self.map = folium.Map(location=KOREA_CENTER, zoom_start=DEFAULT_ZOOM, tiles='OpenStreetMap')
-        stats = self.get_region_statistics()
+        stats = self.get_region_statistics(start_date, end_date)
         
         for feature in self.geojson_data['features']:
             name = feature['properties'].get('NAME_1')
@@ -164,7 +177,7 @@ class NewsMapGeneratorGeo:
             stat = stats.get(db_region, {'count': 0, 'neg_ratio': 0, 'positive_count': 0, 'negative_count': 0})
             
             color = get_region_color_by_avg(stat['neg_ratio']) if stat['count'] > 0 else '#CCCCCC'
-            popup_html = self.create_popup_html(db_region, stat)
+            popup_html = self.create_popup_html(db_region, stat, start_date, end_date)
             
             folium.GeoJson(
                 feature, 
@@ -175,21 +188,21 @@ class NewsMapGeneratorGeo:
         self.add_region_labels()
         self.add_legend()
         self.map.save(output_file)
-        self.add_side_panel_with_events(output_file)
+        self.add_side_panel_with_events(output_file, start_date, end_date)
         print(f"✅ 통합 완료: {os.path.abspath(output_file)}")
 
     # --- 요청하신 사이드 패널 소스코드 삽입 (통합 DB 리스트 연결 수정) ---
-    def add_side_panel_with_events(self, html_file: str):
+    def add_side_panel_with_events(self, html_file: str, start_date=None, end_date=None):
         """사이드 패널(키워드 창) 복구 및 마우스 이벤트 로직"""
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
         
-        stats = self.get_region_statistics()
+        stats = self.get_region_statistics(start_date, end_date)
         region_data = {}
         for main_region in self.REGION_CONSOLIDATION.keys():
             if main_region in stats and stats[main_region]['count'] > 0:
                 # [수정] loader 대신 클래스 내 통합 뉴스 메서드 사용
-                latest_news = self.get_latest_news_integrated(main_region, limit=5)
+                latest_news = self.get_latest_news_integrated(main_region, start_date, end_date, limit=5)
                 news_items = []
                 for news in latest_news:
                     keywords = []
